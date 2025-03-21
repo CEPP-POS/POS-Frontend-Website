@@ -288,15 +288,15 @@ const AddOwnerProduct = () => {
               </div>
 
               <div className="grid grid-cols-7 gap-4">
-                {/* ปริมาตรสุทธิต่อหน่วย */}
+                {/* ปริมาตรมาณต่อหน่วย */}
                 <div className="col-span-4">
                   <div className="py-2">
-                    <span className="font-bold">ปริมาตรสุทธิต่อหน่วย</span>
+                    <span className="font-bold">ปริมาณสุทธิต่อหน่วย</span>
                   </div>
                   <ThaiVirtualKeyboardInput
                     value={netVolume}
                     onChange={setNetVolume}
-                    placeholder="กรอกปริมาตรสุทธิ"
+                    placeholder="กรอกปริมาณสุทธิ"
                     className="w-full border border-[#DD9F52] bg-[#F5F5F5] rounded-full p-3 text-gray-600 focus:outline-none focus:ring-2 focus:ring-brown-400"
                   />
                 </div>
