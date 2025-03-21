@@ -1,0 +1,95 @@
+.virtual-keyboard-wrapper {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  font-family: 'Noto Sans Thai', sans-serif;
+}
+
+.keyboard-scroll-area {
+  height: 320px;
+  width: 100%;
+  pointer-events: none;
+}
+
+.virtual-keyboard-container {
+  background: #f5f5f5;
+  padding: 10px;
+  border-top: 1px solid #ddd;
+  height: 360px;
+}
+
+/* Improved mobile scrolling styles */
+body.keyboard-visible {
+  min-height: 100vh;
+  padding-bottom: 360px;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Container adjustments for mobile */
+.keyboard-visible .content-container {
+  min-height: calc(100vh - 320px);
+  position: relative;
+  z-index: 1;
+}
+
+/* Ensure content remains scrollable on all devices */
+@media (max-width: 768px) {
+  body.keyboard-visible {
+    height: auto;
+    min-height: calc(100vh + 320px);
+  }
+
+  .virtual-keyboard-container {
+    position: fixed;
+    bottom: 0;
+  }
+
+  /* Add padding to prevent content from being hidden */
+  .content-wrapper {
+    padding-bottom: 320px;
+  }
+}
+
+/* Existing keyboard styles */
+.simple-keyboard {
+  font-family: 'Kanit', sans-serif !important;
+  border-radius: 8px;
+  background-color: #f8f8f8;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.simple-keyboard.hg-theme-default {
+  background: #f5f5f5;
+}
+
+.simple-keyboard.hg-theme-default .hg-button {
+  font-family: 'Kanit', sans-serif !important;
+  font-size: 16px !important;
+  height: 50px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  background: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.simple-keyboard .hg-button.special-key {
+  background: #e0e0e0 !important;
+  color: #666 !important;
+  font-weight: bold !important;
+}
+
+.simple-keyboard .hg-button:active {
+  background: #e6e6e6;
+}
+
+/* Add smooth scrolling for iOS */
+* {
+  -webkit-overflow-scrolling: touch;
+} 
