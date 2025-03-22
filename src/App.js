@@ -26,7 +26,6 @@ import Order from "./Pages/Employee/main/order";
 import Home from "./Pages/Owner/SaleSummary/OverView/home";
 import SaleSummaryGraph from "./Pages/Owner/SaleSummary/SaleSummaryGraph/saleSummaryGraph";
 import Stock from "./Pages/Owner/SaleSummary/Stock/stock";
-import NotificationSummary from "./Pages/Owner/SaleSummary/NotificationSummary/notificationSummary";
 import AddOwnerProduct from "./Pages/Owner/SaleSummary/Stock/addOwnerProduct";
 import ProductDetail from "./Pages/Owner/SaleSummary/Stock/productDetail";
 import CancelOrderSummary from "./Pages/Owner/SaleSummary/OrderSummary/cancelOrderSummary";
@@ -69,10 +68,7 @@ function App() {
             <Route path="/order-summary" element={<OrderSummary />} />
             <Route path="/sale-summary-graph" element={<SaleSummaryGraph />} />
             <Route path="/stock" element={<Stock />} />
-            <Route
-              path="/notification-summary"
-              element={<NotificationSummary />}
-            />
+            
             <Route path="/add-owner-product" element={<AddOwnerProduct />} />
             <Route path="/product-detail" element={<ProductDetail />} />
             <Route

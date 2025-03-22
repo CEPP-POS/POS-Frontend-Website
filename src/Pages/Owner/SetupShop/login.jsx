@@ -6,7 +6,6 @@ import ThaiVirtualKeyboard from "../../../Components/General/thaiVirtualKeyboard
 import fetchApi from "../../../Config/fetchApi";
 import configureAPI from "../../../Config/configureAPI";
 import { useDispatch, useSelector } from "react-redux";
-import { setUser } from "../../../Config/redux/userSlice";
 import { jwtDecode } from "jwt-decode";
 import LoadingPopup from "../../../Components/General/loadingPopup";
 
