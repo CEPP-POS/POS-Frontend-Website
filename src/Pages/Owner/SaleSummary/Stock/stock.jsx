@@ -53,14 +53,9 @@ const Stock = () => {
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [ingredientToDelete, setIngredientToDelete] = useState(null);
   const [loading, setLoading] = useState(false);
-
-  const [currentStockQuantity, setCurrentStockQuantity] = useState(
-    updateFormData?.quantity_in_stock || 0
-  );
-  console.log("currentStockQuantity", currentStockQuantity);
-  const [currentTotalVolume, setCurrentTotalVolume] = useState(
-    updateFormData?.net_volume || 0
-  );
+  const [currentStockQuantity, setCurrentStockQuantity] = useState();
+  const [currentTotalVolume, setCurrentTotalVolume] = useState();
+  const [isAddingUpdate, setIsAddingUpdate] = useState(false);
 
   // Fetch products
   const fetchProducts = async () => {
@@ -126,11 +121,6 @@ const Stock = () => {
 
   const handleAddOwnerProduct = () => {
     navigate("/add-owner-product");
-  };
-
-  const handleUpdateClick = (product) => {
-    setSelectedProduct(product);
-    setModalVisible(true);
   };
 
   const closeModal = () => {
@@ -211,6 +201,11 @@ const Stock = () => {
     }
   };
 
+  useEffect(() => {
+    setCurrentStockQuantity(updateFormData.quantity_in_stock || 0);
+    setCurrentTotalVolume(updateFormData.total_volume || 0);
+  }, [updateFormData]);
+
   // Handle form submission for update
   const handleUpdateSubmit = async () => {
     setLoading(true);
@@ -222,7 +217,7 @@ const Stock = () => {
           ingredient_name: selectedProduct.ingredient_name,
           net_volume: parseInt(updateFormData.net_volume),
           unit: selectedProduct.unit,
-          quantity_in_stock: parseInt(updateFormData.quantity_in_stock),
+          quantity_in_stock: parseInt(currentStockQuantity),
           category_name: selectedProduct.category_name || "",
           expiration_date:
             updateFormData.expiration_date ||
@@ -247,14 +242,15 @@ const Stock = () => {
         const responseData = await response.json();
         console.log("POST Response:", responseData);
       } else {
-        // กรณีอัพเดต (โค้ดเดิม)
+        // กรณีอัพเดต
         const payload = {
-          update_id: selectedProduct.update_id,
           quantity_in_stock: parseInt(updateFormData.quantity_in_stock),
           total_volume: parseInt(updateFormData.total_volume),
           net_volume: parseInt(updateFormData.net_volume),
           expiration_date: updateFormData.expiration_date,
         };
+
+        console.log("UPDATE STOCK INGREDIENT:", payload);
 
         const response = await fetchApi(
           `${URL}/owner/update-stock-ingredients/${selectedProduct.update_id}`,
@@ -300,18 +296,42 @@ const Stock = () => {
   };
 
   const handleIncrease = () => {
-    const newQuantity = currentStockQuantity + 1;
-    setCurrentStockQuantity(newQuantity);
-    const volumeChange = 1 * selectedProduct.net_volume;
-    setCurrentTotalVolume((prev) => prev + volumeChange);
+    if (selectedProduct?.update_id === null) {
+      setCurrentStockQuantity((prev) => prev + 1);
+    } else {
+      const newQuantity = currentStockQuantity + 1;
+      setCurrentStockQuantity(newQuantity);
+      const volumeChange = 1 * selectedProduct.net_volume;
+      setCurrentTotalVolume((prev) => prev + volumeChange);
+
+      setUpdateFormData((prev) => ({
+        ...prev,
+        quantity_in_stock: prev.quantity_in_stock + 1,
+        total_volume: prev.total_volume + selectedProduct.net_volume,
+      }));
+    }
   };
 
   const handleDecrease = () => {
-    if (currentStockQuantity > 0) {
-      const newQuantity = currentStockQuantity - 1;
-      setCurrentStockQuantity(newQuantity);
-      const volumeChange = 1 * selectedProduct.net_volume;
-      setCurrentTotalVolume((prev) => prev - volumeChange);
+    if (selectedProduct?.update_id === null) {
+      if (currentStockQuantity > 0) {
+        setCurrentStockQuantity((prev) => prev - 1);
+      }
+    } else {
+      if (currentStockQuantity > 0) {
+        const newQuantity = currentStockQuantity - 1;
+        setCurrentStockQuantity(newQuantity);
+        const volumeChange = 1 * selectedProduct.net_volume;
+        setCurrentTotalVolume((prev) => prev - volumeChange);
+
+        if (currentStockQuantity > 0) {
+          setUpdateFormData((prev) => ({
+            ...prev,
+            quantity_in_stock: prev.quantity_in_stock - 1,
+            total_volume: prev.total_volume - selectedProduct.net_volume,
+          }));
+        }
+      }
     }
   };
 
@@ -384,8 +404,8 @@ const Stock = () => {
                 <IoMdTime color="white" size={32} />
               </div>
               <div className="ml-3">
-                <p>สินค้าที่ใกล้จะหมดอายุ วันที่ 16 มกราคม พ.ศ. 2567</p>
-                <p className="font-bold">ไข่มุกแบบต้ม</p>
+                <p>สินค้าที่ใกล้จะหมดอายุ วันที่ 16 มกราคม พ.ศ. 2569</p>
+                <p className="font-bold">น้ำเชื่อมมิตรผล</p>
               </div>
             </div>
           </div>
@@ -458,7 +478,7 @@ const Stock = () => {
                       {item.ingredient_name}
                     </td>
                     <td className="py-2 border-b border-[#F1F4F7] text-center">
-                      {item.net_volume} {item.unit}
+                      {item.total_volume} {item.unit}
                     </td>
                     <td className="py-2 pl-10 text-center border-b border-[#F1F4F7]">
                       {item.category_name}
@@ -504,7 +524,7 @@ const Stock = () => {
           </div>
         </div>
 
-        {/* Update/Create Product Modal */}
+        {/* Update / Create new update stock Modal */}
         {modalVisible && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
             <div className="bg-[#F5F5F5] rounded-lg p-8 flex flex-col h-auto w-auto relative">
@@ -516,15 +536,32 @@ const Stock = () => {
               {/* Modal Content */}
               <div className="flex mt-10">
                 <div className="flex-shrink-0 mr-8">
-                  {selectedProduct?.image_url && (
-                    <img
-                      src={`${URL}/${selectedProduct?.image_url.replace(
-                        /\\/g,
-                        "/"
-                      )}`}
-                      alt={selectedProduct?.image_url}
-                      className="w-[240px] h-[360px] object-cover rounded-lg border border-gray-300"
-                    />
+                  {selectedProduct?.update_id === null ? (
+                    ingredientHistory?.ingredient_img ? ( // Check if ingredient_img exists
+                      <img
+                        src={`${URL}/${ingredientHistory?.ingredient_img.replace(
+                          /\\/g,
+                          "/"
+                        )}`}
+                        alt={ingredientHistory?.ingredient_img}
+                        className="w-[240px] h-[360px] object-cover rounded-lg border border-gray-300"
+                      />
+                    ) : null // Don't render anything if ingredient_img is not available
+                  ) : (
+                    <div>
+                      {
+                        selectedProduct?.image_url ? ( // Check if image_url exists
+                          <img
+                            src={`${URL}/${selectedProduct?.image_url.replace(
+                              /\\/g,
+                              "/"
+                            )}`}
+                            alt={selectedProduct?.image_url}
+                            className="w-[240px] h-[360px] object-cover rounded-lg border border-gray-300"
+                          />
+                        ) : null // Don't render anything if image_url is not available
+                      }
+                    </div>
                   )}
                 </div>
 
@@ -532,7 +569,7 @@ const Stock = () => {
                 <div className="flex-1 space-y-4 text-gray-700">
                   {/* Category */}
                   <p className="flex items-center">
-                    <span className="font-bold text-gray-800">หมวดหมู่:</span>
+                    <span className="font-bold text-gray-800">หมวดหมู่</span>
                     <span className="ml-2 px-3 py-1 border border-purple-600 rounded-full text-purple-600">
                       {selectedProduct?.category_name || "ไม่ระบุ"}
                     </span>
@@ -599,39 +636,41 @@ const Stock = () => {
                     </div>
                   </div>
 
-                  {/* total volumn */}
-                  <div>
-                    <div className="font-bold text-gray-800 mb-1">
-                      ปริมาณรวมทั้งหมด
+                  {/* Total Volume (Only visible for updates) */}
+                  {!isAddingUpdate && (
+                    <div>
+                      <div className="font-bold text-gray-800 mb-1">
+                        ปริมาณรวมทั้งหมด
+                      </div>
+                      <div className="flex items-center">
+                        <ThaiVirtualKeyboardInput
+                          value={currentTotalVolume}
+                          onChange={(value) =>
+                            setUpdateFormData((prev) => ({
+                              ...prev,
+                              total_volume: value,
+                            }))
+                          }
+                          type="number"
+                          readOnly={!isEditingTotalVolume}
+                          className="border border-gray-300 rounded-full p-2 text-gray-600 focus:outline-none w-full mr-3"
+                        />
+                        <button
+                          type="button"
+                          className={`px-4 py-2 rounded-full font-medium ${
+                            isEditingTotalVolume
+                              ? "bg-[#C68A47] text-white"
+                              : "border border-[#C68A47] text-[#C68A47]"
+                          } hover:bg-[#C68A47] hover:text-white`}
+                          onClick={() =>
+                            setIsEditingTotalVolume(!isEditingTotalVolume)
+                          }
+                        >
+                          {isEditingTotalVolume ? "บันทึก" : "แก้ไข"}
+                        </button>
+                      </div>
                     </div>
-                    <div className="flex items-center">
-                      <ThaiVirtualKeyboardInput
-                        value={currentTotalVolume}
-                        onChange={(value) =>
-                          setUpdateFormData((prev) => ({
-                            ...prev,
-                            total_volume: value,
-                          }))
-                        }
-                        type="number"
-                        readOnly={!isEditingTotalVolume}
-                        className="border border-gray-300 rounded-full p-2 text-gray-600 focus:outline-none w-full mr-3"
-                      />
-                      <button
-                        type="button"
-                        className={`px-4 py-2 rounded-full font-medium ${
-                          isEditingNetVolume
-                            ? "bg-[#C68A47] text-white"
-                            : "border border-[#C68A47] text-[#C68A47]"
-                        } hover:bg-[#C68A47] hover:text-white`}
-                        onClick={() =>
-                          setIsEditingTotalVolume(!isEditingTotalVolume)
-                        }
-                      >
-                        {isEditingTotalVolume ? "บันทึก" : "แก้ไข"}
-                      </button>
-                    </div>
-                  </div>
+                  )}
 
                   {/* Stock Quantity */}
                   <div>
@@ -739,6 +778,8 @@ const Stock = () => {
                             onClick={() => {
                               setHistoryModalVisible(false);
                               handleUpdate(update.update_id);
+                              setIsAddingUpdate(false); // Open modal in update mode
+                              setModalVisible(true);
                             }}
                             className="text-[#DD9F52] bg-[#F5F5F5] border border-[#DD9F52] focus:outline-none hover:bg-[#DD9F52] hover:text-white focus:ring-4 focus:ring-gray-100 font-medium rounded-full text-sm px-4 py-1"
                           >
@@ -762,17 +803,18 @@ const Stock = () => {
                 <button
                   onClick={() => {
                     setHistoryModalVisible(false);
-                    // เซ็ตค่าเริ่มต้นสำหรับการเพิ่มใหม่
+                    // Set initial values for a new addition
                     setUpdateFormData({
                       quantity_in_stock: "",
                       total_volume: "",
-                      net_volume: ingredientHistory.net_volume || "", // เก็บค่า net_volume เดิม
-                      expiration_date: "", // วันที่เป็นค่าว่าง
+                      net_volume: ingredientHistory.net_volume || "",
+                      expiration_date: "",
                     });
                     setSelectedProduct({
                       ...ingredientHistory,
-                      update_id: null, // ส่ง update_id เป็น null เพื่อบอกว่าเป็นการเพิ่มใหม่
+                      update_id: null, // Setting update_id to null for a new update
                     });
+                    setIsAddingUpdate(true); // Open modal in add mode
                     setModalVisible(true);
                   }}
                   className="px-6 py-2 bg-[#DD9F52] text-white rounded-full hover:bg-[#C68A47] transition-colors font-bold"

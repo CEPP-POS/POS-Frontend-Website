@@ -22,9 +22,11 @@ const SaleSummaryGraph = () => {
 
   const [selectedDate, setSelectedDate] = useState(formattedDate);
   const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   // Function to fetch sales data based on the selected year and month
   const fetchSalesData = async (year, month) => {
+    setLoading(true); // Start loading
     try {
       const response = await fetchApi(
         `${URL}/owner/stock-sale/${year}/${month}`,
@@ -39,6 +41,8 @@ const SaleSummaryGraph = () => {
       }
     } catch (error) {
       console.error("Error fetching sales data:", error);
+    } finally {
+      setLoading(false); // Stop loading after fetch
     }
   };
 
@@ -56,7 +60,7 @@ const SaleSummaryGraph = () => {
         <span className="flex justify-end">
           <CalendarSelect setSelectedDate={setSelectedDate} />
         </span>
-        <IncomeOrderCancel data={data} />
+        {loading ? <div>Loading...</div> : <IncomeOrderCancel data={data} />}
         <div className="mt-3 flex-1">
           {/* Line Chart Section */}
           <div className="bg-[#F5F5F5] p-4 border rounded-lg flex flex-col">

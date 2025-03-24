@@ -4,7 +4,6 @@ import { HiOutlineHome } from "react-icons/hi";
 import { TbLogout } from "react-icons/tb";
 
 const LoadingPopup = ({ loading }) => {
-  console.log("load", loading);
   if (!loading) return null; // Prevent rendering when loading is false
 
   return (

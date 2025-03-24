@@ -5,6 +5,7 @@ import {
   IoIosArrowBack,
   IoIosArrowForward,
 } from "react-icons/io";
+import { useEffect } from "react";
 
 const CalendarSelect = ({ setSelectedDate }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -57,13 +58,18 @@ const CalendarSelect = ({ setSelectedDate }) => {
     }
   };
 
-  const handleDateSelect = () => {
-    const monthIndex = months.indexOf(selectedMonth) + 1; // Get month index (1-12)
-    const formattedDate = `${selectedYear}-${monthIndex
+  const handleDateSelect = (day) => {
+    const monthIndex = months.indexOf(selectedMonth) + 1;
+    const gregorianYear = selectedYear - 543;
+
+    const formattedDate = `${gregorianYear}-${monthIndex
       .toString()
-      .padStart(2, "0")}-${selectedDay.toString().padStart(2, "0")}`; // Format date as YYYY-MM-DD
-    setSelectedDate(formattedDate); // Set the selected date in parent component
-    toggleModal(); // Close the modal
+      .padStart(2, "0")}-${selectedDay.toString().padStart(2, "0")}`;
+
+    console.log("formattedDate:", formattedDate);
+
+    setSelectedDate(formattedDate);
+    toggleModal();
   };
 
   return (
@@ -106,7 +112,10 @@ const CalendarSelect = ({ setSelectedDate }) => {
                         ? "bg-[#DD9F52] rounded-full text-white"
                         : "hover:bg-[#F1EBE1] hover:rounded-full"
                     }`}
-                    onClick={() => setSelectedDay(day)}
+                    onClick={() => {
+                      setSelectedDay(day);
+                      handleDateSelect(day);
+                    }}
                   >
                     {day}
                   </li>
