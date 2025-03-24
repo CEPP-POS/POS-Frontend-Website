@@ -11,9 +11,6 @@ const Menu = () => {
   const URL = configureAPI[environment].URL;
 
   const socket = useWebSocket();
-
-  const userData = useSelector((state) => state.user.userData);
-  const { owner_id } = userData || {};
   const cartItems = useSelector((state) => state.cart.items);
 
   const navigate = useNavigate();
@@ -42,7 +39,7 @@ const Menu = () => {
 
   useEffect(() => {
     fetchMenu();
-  }, [URL, owner_id, activeCategory]);
+  }, [URL, activeCategory]);
 
   console.log("Menu Data:", menuData);
 

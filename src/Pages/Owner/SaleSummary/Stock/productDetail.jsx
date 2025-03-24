@@ -176,7 +176,7 @@ const ProductDetail = () => {
                       </td>
                       <td className="py-2 pl-9 text-center border-b border-[#F1F4F7]">
                         <div className="border border-[#70AB8E] rounded-full text-[#70AB8E] inline-flex items-center justify-center px-2">
-                          {item?.category_name || "-"}
+                          {item?.category_name || "ไม่มีกลุ่ม"}
                         </div>
                       </td>
                     </tr>

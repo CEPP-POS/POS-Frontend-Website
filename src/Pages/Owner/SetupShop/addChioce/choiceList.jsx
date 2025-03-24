@@ -148,6 +148,7 @@ const ChoiceList = () => {
         break;
       case "ความหวาน":
         endpoint = `${URL}/owner/menus/options/sweetness/${productToDelete.name}`;
+        console.log("DELETE GROUP:", productToDelete.name);
         break;
       case "ท็อปปิ้ง":
         endpoint = `${URL}/owner/menus/options/add-ons`;

@@ -14,9 +14,6 @@ const SweetLevelChoice = () => {
   const environment = process.env.NODE_ENV || "development";
   const URL = configureAPI[environment].URL;
 
-  const userData = useSelector((state) => state.user.userData);
-  const { owner_id } = userData || {};
-
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");

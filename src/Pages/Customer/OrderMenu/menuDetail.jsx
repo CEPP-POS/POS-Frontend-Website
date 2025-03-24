@@ -13,9 +13,7 @@ const MenuDetail = () => {
   const environment = process.env.NODE_ENV || "development";
   const URL = configureAPI[environment].URL;
 
-  const userData = useSelector((state) => state.user.userData);
   const cartItems = useSelector((state) => state.cart.items);
-  const { owner_id } = userData || {};
 
   const location = useLocation();
   const { menuId } = location.state || {};
