@@ -30,8 +30,6 @@ const fetchApi = async (url, method, body) => {
     headers["role"] = role;
   }
 
-  console.log("HEADERS :", headers);
-
   const options = {
     method: method,
     headers: headers,

@@ -53,14 +53,8 @@ const Stock = () => {
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [ingredientToDelete, setIngredientToDelete] = useState(null);
   const [loading, setLoading] = useState(false);
-
-  const [currentStockQuantity, setCurrentStockQuantity] = useState(
-    updateFormData?.quantity_in_stock || 0
-  );
-  console.log("currentStockQuantity", currentStockQuantity);
-  const [currentTotalVolume, setCurrentTotalVolume] = useState(
-    updateFormData?.net_volume || 0
-  );
+  const [currentStockQuantity, setCurrentStockQuantity] = useState();
+  const [currentTotalVolume, setCurrentTotalVolume] = useState();
 
   // Fetch products
   const fetchProducts = async () => {
@@ -211,6 +205,11 @@ const Stock = () => {
     }
   };
 
+  useEffect(() => {
+    setCurrentStockQuantity(updateFormData.quantity_in_stock || 0);
+    setCurrentTotalVolume(updateFormData.total_volume || 0);
+  }, [updateFormData]);
+
   // Handle form submission for update
   const handleUpdateSubmit = async () => {
     setLoading(true);
@@ -247,14 +246,15 @@ const Stock = () => {
         const responseData = await response.json();
         console.log("POST Response:", responseData);
       } else {
-        // กรณีอัพเดต (โค้ดเดิม)
+        // กรณีอัพเดต
         const payload = {
-          update_id: selectedProduct.update_id,
           quantity_in_stock: parseInt(updateFormData.quantity_in_stock),
           total_volume: parseInt(updateFormData.total_volume),
           net_volume: parseInt(updateFormData.net_volume),
           expiration_date: updateFormData.expiration_date,
         };
+
+        console.log("UPDATE STOCK INGREDIENT:", payload);
 
         const response = await fetchApi(
           `${URL}/owner/update-stock-ingredients/${selectedProduct.update_id}`,
@@ -304,6 +304,12 @@ const Stock = () => {
     setCurrentStockQuantity(newQuantity);
     const volumeChange = 1 * selectedProduct.net_volume;
     setCurrentTotalVolume((prev) => prev + volumeChange);
+
+    setUpdateFormData((prev) => ({
+      ...prev,
+      quantity_in_stock: prev.quantity_in_stock + 1,
+      total_volume: prev.total_volume + selectedProduct.net_volume,
+    }));
   };
 
   const handleDecrease = () => {
@@ -312,6 +318,14 @@ const Stock = () => {
       setCurrentStockQuantity(newQuantity);
       const volumeChange = 1 * selectedProduct.net_volume;
       setCurrentTotalVolume((prev) => prev - volumeChange);
+
+      if (currentStockQuantity > 0) {
+        setUpdateFormData((prev) => ({
+          ...prev,
+          quantity_in_stock: prev.quantity_in_stock - 1,
+          total_volume: prev.total_volume - selectedProduct.net_volume,
+        }));
+      }
     }
   };
 
@@ -458,7 +472,7 @@ const Stock = () => {
                       {item.ingredient_name}
                     </td>
                     <td className="py-2 border-b border-[#F1F4F7] text-center">
-                      {item.net_volume} {item.unit}
+                      {item.total_volume} {item.unit}
                     </td>
                     <td className="py-2 pl-10 text-center border-b border-[#F1F4F7]">
                       {item.category_name}
@@ -504,7 +518,7 @@ const Stock = () => {
           </div>
         </div>
 
-        {/* Update/Create Product Modal */}
+        {/* Update / Create new update stock Modal */}
         {modalVisible && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
             <div className="bg-[#F5F5F5] rounded-lg p-8 flex flex-col h-auto w-auto relative">
@@ -532,7 +546,7 @@ const Stock = () => {
                 <div className="flex-1 space-y-4 text-gray-700">
                   {/* Category */}
                   <p className="flex items-center">
-                    <span className="font-bold text-gray-800">หมวดหมู่:</span>
+                    <span className="font-bold text-gray-800">หมวดหมู่</span>
                     <span className="ml-2 px-3 py-1 border border-purple-600 rounded-full text-purple-600">
                       {selectedProduct?.category_name || "ไม่ระบุ"}
                     </span>

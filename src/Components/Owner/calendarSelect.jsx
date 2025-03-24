@@ -58,12 +58,15 @@ const CalendarSelect = ({ setSelectedDate }) => {
   };
 
   const handleDateSelect = () => {
-    const monthIndex = months.indexOf(selectedMonth) + 1; // Get month index (1-12)
-    const formattedDate = `${selectedYear}-${monthIndex
+    const monthIndex = months.indexOf(selectedMonth) + 1;
+    const gregorianYear = selectedYear - 543;
+
+    const formattedDate = `${gregorianYear}-${monthIndex
       .toString()
-      .padStart(2, "0")}-${selectedDay.toString().padStart(2, "0")}`; // Format date as YYYY-MM-DD
-    setSelectedDate(formattedDate); // Set the selected date in parent component
-    toggleModal(); // Close the modal
+      .padStart(2, "0")}-${selectedDay.toString().padStart(2, "0")}`;
+
+    setSelectedDate(formattedDate);
+    toggleModal();
   };
 
   return (

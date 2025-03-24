@@ -34,13 +34,23 @@ const OrderSummary = () => {
 
   const handleTimeRangeClick = (timeRange) => {
     setSelectedTimeRange(timeRange);
+    fetchOrderData(selectedDate, timeRange); 
   };
 
   // Function to fetch order data based on the selected date
-  const fetchOrderData = async (selectedDate) => {
+  const fetchOrderData = async (selectedDate, selectedTimeRange) => {
     try {
+      const timeRangeMapping = {
+        รายปี: "year",
+        รายเดือน: "month",
+        รายวัน: "date",
+        ทั้งหมด: "all",
+      };
+
+      const timeRangeParam = timeRangeMapping[selectedTimeRange] || "all";
+
       const response = await fetchApi(
-        `${URL}/owner/stock-orders/${selectedDate}`
+        `${URL}/owner/stock-orders/${selectedDate}/${timeRangeParam}`
       );
       const data = await response.json();
       console.log("API Response Data:", data);
@@ -77,10 +87,9 @@ const OrderSummary = () => {
     }
   };
 
-  // Fetch data when the component mounts or when the selected date changes
   useEffect(() => {
-    fetchOrderData(selectedDate);
-  }, [selectedDate]);
+    fetchOrderData(selectedDate, selectedTimeRange);
+  }, [selectedDate, selectedTimeRange]);
 
   // Add this function to handle viewing the slip
   const handleViewSlip = (slipUrl) => {
