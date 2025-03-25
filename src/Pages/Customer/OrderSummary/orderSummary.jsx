@@ -57,12 +57,11 @@ const Summary = () => {
     fetchMenuData();
   }, []);
 
-  const subtotal = items.reduce(
-    (acc, item) => acc + item.price * item.quantity,
-    0
-  );
+  const subtotal = items.reduce((acc, item) => acc + item.price, 0);
   const tax = 0;
   const total = subtotal + parseFloat(tax);
+
+  console.log("TOTAL:", total);
 
   const handleBack = () => navigate("/menu");
 
@@ -183,24 +182,22 @@ const Summary = () => {
                     </td>
                     <td className="text-center px-4">
                       <div className="flex items-center justify-center space-x-4">
-                        <button
+                        {/*  <button
                           onClick={() => handleDecreaseQuantity(item)}
                           className="w-8 h-8 font-bold text-white bg-[#C94C4C] rounded-full flex items-center justify-center"
                         >
                           -
-                        </button>
+                        </button>*/}
                         <div>{item.quantity}</div>
-                        <button
+                        {/* <button
                           onClick={() => handleIncreaseQuantity(item)}
                           className="w-8 h-8 text-white bg-[#4B8455] rounded-full flex items-center justify-center"
                         >
                           +
-                        </button>
+                        </button> */}
                       </div>
                     </td>
-                    <td className="text-center px-4">
-                      {item.price * item.quantity} บาท
-                    </td>
+                    <td className="text-center px-4">{item.price} บาท</td>
                     <td className="text-center justify-center px-4">
                       <button
                         onClick={() => handleRemove(item)}

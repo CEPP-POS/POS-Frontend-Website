@@ -101,6 +101,8 @@ const PaymentMethod = () => {
             price: item.price,
           }));
 
+          console.log("SEND ORDER:", formattedItems);
+
           const payload = {
             createOrderDto,
             items: formattedItems,
