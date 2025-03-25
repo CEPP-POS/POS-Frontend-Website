@@ -87,6 +87,8 @@ const Order = () => {
     }
   };
 
+  console.log("ORDER DATA:", orders);
+
   useEffect(() => {
     if (socket) {
       console.log("Setting up WebSocket listener in Order page");
@@ -340,6 +342,20 @@ const Order = () => {
                                   ขนาด: {item.details[1]?.size_name || "-"}
                                 </>
                               )}
+                              {item.add_ons.length > 0 && (
+                                <>
+                                  {" "}
+                                  | ท็อปปิ้ง :{" "}
+                                  {item.add_ons.map((addOn, index) => (
+                                    <span key={index}>
+                                      {addOn.ingredient_name}
+                                      {index < item.add_ons.length - 1
+                                        ? ", "
+                                        : ""}
+                                    </span>
+                                  ))}
+                                </>
+                              )}
                             </span>
                           </div>
                         )
@@ -464,7 +480,7 @@ const Order = () => {
                           order.order_items.length > 0 ? (
                             order.order_items.map(
                               (item, idx) => (
-                                console.log("ITEM DATA IN MAP:", item),
+                                console.log("ITEM DATA IN MAP SLICE:", item),
                                 (
                                   <div key={idx} className="mb-2">
                                     <div className="flex justify-between text-2xl">
@@ -485,6 +501,20 @@ const Order = () => {
                                           {item.details[0]?.level_name || "-"} |
                                           ขนาด:{" "}
                                           {item.details[1]?.size_name || "-"}
+                                        </>
+                                      )}
+                                      {item.add_ons.length > 0 && (
+                                        <>
+                                          {" "}
+                                          | ท็อปปิ้ง :{" "}
+                                          {item.add_ons.map((addOn, index) => (
+                                            <span key={index}>
+                                              {addOn.ingredient_name}
+                                              {index < item.add_ons.length - 1
+                                                ? ", "
+                                                : ""}
+                                            </span>
+                                          ))}
                                         </>
                                       )}
                                     </span>

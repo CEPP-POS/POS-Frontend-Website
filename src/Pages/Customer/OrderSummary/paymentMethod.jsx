@@ -118,6 +118,8 @@ const PaymentMethod = () => {
               payload
             );
 
+            console.log("POST ORDER TO CREATE:", payload);
+
             console.log("Got response:", response);
 
             if (!response.ok) {
