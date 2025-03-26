@@ -20,9 +20,8 @@ const Home = () => {
     day: "2-digit",
   };
   const formattedDate = today.toLocaleDateString("en-CA", options);
-  const [selectedDate, setSelectedDate] = useState(formattedDate); 
-  const [data, setData] = useState(null); 
-
+  const [selectedDate, setSelectedDate] = useState(formattedDate);
+  const [data, setData] = useState(null);
 
   console.log("SELECTED DATE", selectedDate);
 
@@ -45,8 +44,9 @@ const Home = () => {
   };
 
   useEffect(() => {
+    console.log("Fetching data for:", selectedDate);
     fetchData(selectedDate);
-  }, [selectedDate]); 
+  }, [selectedDate]);
 
   return (
     <div className="h-screen-website bg-[#F5F5F5]">

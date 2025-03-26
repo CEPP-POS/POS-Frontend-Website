@@ -75,7 +75,7 @@ const GlassChoice = () => {
           setOldGroupName(data.group_name);
 
           const existingChoices = data.sizes.map((size) => ({
-            size_id: size.size_id,
+            id: size.size_id,
             name: size.size_name,
             price: size.size_price,
           }));

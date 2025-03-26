@@ -46,8 +46,7 @@ const CalendarSelect = ({ setSelectedDate }) => {
   const toggleModal = () => setIsModalOpen(!isModalOpen);
 
   const handleDateSelect = (day) => {
-    const gregorianYear = selectedYear + 543;
-    const formattedDate = `${gregorianYear}-${(selectedMonth + 1)
+    const formattedDate = `${selectedYear}-${(selectedMonth + 1)
       .toString()
       .padStart(2, "0")}-${day.toString().padStart(2, "0")}`;
     console.log("formattedDate:", formattedDate);
