@@ -26,7 +26,6 @@ const Summary = () => {
   const socket = useWebSocket();
 
   const items = useSelector((state) => state.cart.items);
-
   console.log("cart item:", items);
 
   useEffect(() => {
@@ -95,6 +94,7 @@ const Summary = () => {
         selectedSweetness: item.selectedSweetness,
         selectedType: item.selectedType,
         selectedAddOn: item.selectedAddOn,
+        price: item.price,
       },
     });
   };
@@ -109,6 +109,7 @@ const Summary = () => {
           selectedSweetness: item.selectedSweetness,
           selectedType: item.selectedType,
           selectedAddOn: item.selectedAddOn,
+          price: item.price,
         },
       });
     }
@@ -134,6 +135,7 @@ const Summary = () => {
               <tr className="border-b border-gray-300 text-2xl">
                 <th className="text-left py-2 px-4">เมนู</th>
                 <th className="text-center py-2 px-4">จำนวน</th>
+                <th className="text-center py-2 px-4">ราคาต่อหน่วย</th>
                 <th className="text-center py-2 px-4">ราคาทั้งหมด</th>
                 <th className="text-center py-2 px-4">ลบ</th>
               </tr>
@@ -182,20 +184,23 @@ const Summary = () => {
                     </td>
                     <td className="text-center px-4">
                       <div className="flex items-center justify-center space-x-4">
-                        {/*  <button
+                        <button
                           onClick={() => handleDecreaseQuantity(item)}
                           className="w-8 h-8 font-bold text-white bg-[#C94C4C] rounded-full flex items-center justify-center"
                         >
                           -
-                        </button>*/}
+                        </button>
                         <div>{item.quantity}</div>
-                        {/* <button
+                        <button
                           onClick={() => handleIncreaseQuantity(item)}
                           className="w-8 h-8 text-white bg-[#4B8455] rounded-full flex items-center justify-center"
                         >
                           +
-                        </button> */}
+                        </button>
                       </div>
+                    </td>
+                    <td className="text-center px-4">
+                      {item.price / item.quantity} บาท
                     </td>
                     <td className="text-center px-4">{item.price} บาท</td>
                     <td className="text-center justify-center px-4">

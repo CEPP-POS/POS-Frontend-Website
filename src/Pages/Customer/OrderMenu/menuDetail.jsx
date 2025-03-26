@@ -92,6 +92,8 @@ const MenuDetail = () => {
       menuId: menuId,
       menuName: menu.menu_name,
       menu_img: menu.image_url,
+      menu_quantity: menu.quantity,
+      menu_price: menu.menu_price,
       selectedType: {
         id: menu.menu_type_group.find((type) => type.type_name === selectedType)
           ?.menu_type_id,
