@@ -218,7 +218,7 @@ const CancelOrderSummary = () => {
                 <h2 className="text-3lg font-bold mb-4">ออเดอร์ที่ถูกยกเลิก</h2>
               </div>
               <p>
-                <strong>หมายเลขออเดอร์: {selectedOrder}</strong>
+                <strong>หมายเลขออเดอร์ {selectedOrder}</strong>
               </p>
               {/* Table Section */}
               <div className="overflow-x-auto border rounded-lg p-2 mt-2">
@@ -279,13 +279,29 @@ const CancelOrderSummary = () => {
 
               <div className="grid grid-cols-4 gap-2 mt-6">
                 <p className="col-span-1">เวลาที่สั่งซื้อ </p>
-                <p className="col-span-3">{selectedOrderData.dateTime} </p>
+                <p className="col-span-3">
+                  {" "}
+                  {new Intl.DateTimeFormat("th-TH", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit",
+                    timeZone: "Asia/Bangkok",
+                  }).format(new Date(selectedOrderData.order_date))}{" "}
+                  น.
+                </p>
                 <p className="col-span-1">ราคาสุทธิ </p>
                 <p className="col-span-3">
                   {selectedOrderData.total_amount} บาท
                 </p>
                 <p className="col-span-1">ช่องทางการชำระเงิน </p>
-                <p className="col-span-3">{selectedOrderData.payment_method}</p>
+                <p className="col-span-3">
+                  {selectedOrderData.payment_method === "cash"
+                    ? "เงินสด"
+                    : "QR Code"}
+                </p>
                 <div className="col-span-1 flex">
                   <p>สถานะ </p>
                   <div className="px-2">
