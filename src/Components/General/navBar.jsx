@@ -3,15 +3,44 @@ import { useNavigate } from "react-router-dom";
 import { HiOutlineHome } from "react-icons/hi";
 import { TbLogout } from "react-icons/tb";
 import { PiUserCircleBold } from "react-icons/pi";
+import { AiOutlineBranches } from "react-icons/ai";
+import fetchApi from "../../Config/fetchApi";
+import configureAPI from "../../Config/configureAPI";
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const [branches, setBranches] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const environment = process.env.NODE_ENV || "development";
+  const URL = configureAPI[environment].URL;
+
   const role = sessionStorage.getItem("role");
+  const owner_id = sessionStorage.getItem("owner_id");
   console.log("ROLE FROM TOKEN:", role);
 
   const handleLogout = () => {
     sessionStorage.clear();
     navigate("/");
+  };
+
+  const fetchBranches = async () => {
+    try {
+      const response = await fetchApi(`${URL}/branches/owner/${owner_id}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch branches");
+      }
+      const data = await response.json();
+      setBranches(data);
+    } catch (error) {
+      console.error("Error fetching branches:", error);
+    }
+  };
+
+  const toggleDropdown = async () => {
+    if (!isOpen) {
+      await fetchBranches();
+    }
+    setIsOpen(!isOpen);
   };
 
   return (
@@ -52,9 +81,47 @@ const Navbar = () => {
             onClick={() => navigate("/role")}
             className="flex p-2 text-white hover:text-[#C68A47] transition-all duration-300"
           >
-            <HiOutlineHome size={24} />
+            <HiOutlineHome lineHome size={24} />
             <span className="text-xl font-bold">หน้าหลัก</span>
           </button>
+
+          <div className="relative">
+            <button
+              className="flex p-2 text-white hover:text-[#C68A47] transition-all duration-300"
+              onClick={toggleDropdown}
+            >
+              <div className="flex items-center">
+                <AiOutlineBranches size={24} />
+                <span className="text-xl font-bold">สาขา</span>
+              </div>
+
+              {isOpen && (
+                <div className="absolute left-0 mt-14 z-10 bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-white-700">
+                  <ul className="py-2 text-black">
+                    {branches.length > 0 ? (
+                      branches.map((branch) => (
+                        <li key={branch.branch_id}>
+                          <button className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-white-600">
+                            {branch.branch_name}
+                          </button>
+                        </li>
+                      ))
+                    ) : (
+                      <li className="px-4 py-2 text-gray-500">
+                        ไม่มีข้อมูลสาขา
+                      </li>
+                    )}
+                    <li>
+                      <button className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-white-600">
+                        ซิงค์ข้อมูลสาขา
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+              )}
+            </button>
+          </div>
+
           <button
             onClick={handleLogout}
             className="flex p-2 text-white hover:text-red-600 transition-all duration-300"
@@ -65,7 +132,9 @@ const Navbar = () => {
           {role && (
             <div className="flex items-center justify-center w-[150px] p-1 space-x-1 bg-[#DD9F52] rounded-full">
               <PiUserCircleBold size={24} className="text-white" />
-              <span className="text-xl font-bold text-white">เจ้าของร้าน</span>
+              <span className="text-xl font-bold text-white">
+                {role === "employee" ? "พนักงาน" : "เจ้าของร้าน"}
+              </span>
             </div>
           )}
         </div>

@@ -26,7 +26,6 @@ const Summary = () => {
   const socket = useWebSocket();
 
   const items = useSelector((state) => state.cart.items);
-
   console.log("cart item:", items);
 
   useEffect(() => {
@@ -57,12 +56,11 @@ const Summary = () => {
     fetchMenuData();
   }, []);
 
-  const subtotal = items.reduce(
-    (acc, item) => acc + item.price * item.quantity,
-    0
-  );
+  const subtotal = items.reduce((acc, item) => acc + item.price, 0);
   const tax = 0;
   const total = subtotal + parseFloat(tax);
+
+  console.log("TOTAL:", total);
 
   const handleBack = () => navigate("/menu");
 
@@ -96,6 +94,7 @@ const Summary = () => {
         selectedSweetness: item.selectedSweetness,
         selectedType: item.selectedType,
         selectedAddOn: item.selectedAddOn,
+        price: item.price,
       },
     });
   };
@@ -110,6 +109,7 @@ const Summary = () => {
           selectedSweetness: item.selectedSweetness,
           selectedType: item.selectedType,
           selectedAddOn: item.selectedAddOn,
+          price: item.price,
         },
       });
     }
@@ -135,6 +135,7 @@ const Summary = () => {
               <tr className="border-b border-gray-300 text-2xl">
                 <th className="text-left py-2 px-4">เมนู</th>
                 <th className="text-center py-2 px-4">จำนวน</th>
+                <th className="text-center py-2 px-4">ราคาต่อหน่วย</th>
                 <th className="text-center py-2 px-4">ราคาทั้งหมด</th>
                 <th className="text-center py-2 px-4">ลบ</th>
               </tr>
@@ -199,8 +200,9 @@ const Summary = () => {
                       </div>
                     </td>
                     <td className="text-center px-4">
-                      {item.price * item.quantity} บาท
+                      {item.price / item.quantity} บาท
                     </td>
+                    <td className="text-center px-4">{item.price} บาท</td>
                     <td className="text-center justify-center px-4">
                       <button
                         onClick={() => handleRemove(item)}

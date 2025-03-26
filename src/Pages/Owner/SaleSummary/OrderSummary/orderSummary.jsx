@@ -15,6 +15,8 @@ const OrderSummary = () => {
   const timeRangeFilter = ["ทั้งหมด", "รายปี", "รายเดือน", "รายวัน"];
   const [selectedTimeRange, setSelectedTimeRange] = useState("ทั้งหมด");
   const [orderData, setOrderData] = useState([]);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [selectedOrderData, setSelectedOrderData] = useState(null);
 
   // Set default date to today's date in the format YYYY-MM-DD
   const today = new Date();
@@ -34,7 +36,7 @@ const OrderSummary = () => {
 
   const handleTimeRangeClick = (timeRange) => {
     setSelectedTimeRange(timeRange);
-    fetchOrderData(selectedDate, timeRange); 
+    fetchOrderData(selectedDate, timeRange);
   };
 
   // Function to fetch order data based on the selected date
@@ -87,9 +89,38 @@ const OrderSummary = () => {
     }
   };
 
+  const closeModal = () => {
+    setSelectedOrderData(null);
+  };
+
   useEffect(() => {
     fetchOrderData(selectedDate, selectedTimeRange);
   }, [selectedDate, selectedTimeRange]);
+
+  // fetch select order
+  useEffect(() => {
+    const fetchOrderDetail = async () => {
+      try {
+        const response = await fetchApi(
+          `${URL}/owner/orders/${selectedOrder}`,
+          "GET"
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch order details");
+        }
+
+        const data = await response.json();
+        setSelectedOrderData(data);
+      } catch (error) {
+        console.error("Error fetching order:", error);
+      }
+    };
+    fetchOrderDetail();
+  }, [selectedOrder]);
+
+  const handleRowClick = (order) => {
+    setSelectedOrder(order);
+  };
 
   // Add this function to handle viewing the slip
   const handleViewSlip = (slipUrl) => {
@@ -117,6 +148,8 @@ const OrderSummary = () => {
         return order.payment_method === paymentFilter;
       })
     : [];
+
+  console.log("SELECT ORDER DATA:", selectedOrderData);
 
   return (
     <div className="h-screen-website bg-[#F5F5F5]">
@@ -176,7 +209,7 @@ const OrderSummary = () => {
                 </th>
                 <th className="px-1 py-2 border-b border-[#000000]">จำนวน</th>
                 <th className="pl-10 py-2 border-b border-[#000000]">
-                  ราคาสุทธิ
+                  ราคาทั้งหมด
                 </th>
                 <th className="pr-5 py-2 text-center border-b border-[#000000]">
                   ช่องทางการชำระเงิน
@@ -191,6 +224,7 @@ const OrderSummary = () => {
                 filteredOrders.map((item) => (
                   <tr
                     key={item.order_id}
+                    onClick={() => handleRowClick(item.order_id)}
                     className="cursor-pointer hover:bg-gray-100"
                   >
                     <td className="pr-5 text-center border-b border-[#F1F4F7]">
@@ -203,7 +237,7 @@ const OrderSummary = () => {
                       {item.quantity}
                     </td>
                     <td className="py-2 pl-10 text-center border-b border-[#F1F4F7]">
-                      {item.total_amount}
+                      {item.amount} {"บาท"}
                     </td>
                     <td className="py-2 flex justify-center text-center border-b border-[#F1F4F7]">
                       <div className="border-x px-2 border border-[#70AB8E] text-[#70AB8E] rounded-full">
@@ -276,6 +310,111 @@ const OrderSummary = () => {
                 alt="Payment Slip"
                 className="max-h-[70vh] object-contain rounded-md border border-gray-200 shadow-sm"
               />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* select order */}
+      {selectedOrderData && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+          <div className="bg-[#F5F5F5] p-10 rounded-lg shadow-lg w-[1024px] overflow-y-auto">
+            <div className="flex justify-center">
+              <h2 className="text-3lg font-bold mb-4">ออเดอร์</h2>
+            </div>
+            <p>
+              <strong>หมายเลขออเดอร์ {selectedOrder}</strong>
+            </p>
+            {/* Table Section */}
+            <div className="overflow-x-auto border rounded-lg p-2 mt-2">
+              <table className="border-collapse table-auto w-full">
+                <thead>
+                  <tr>
+                    <th className="py-2 text-center border-b border-[#000000]">
+                      รายการสินค้า
+                    </th>
+                    <th className="py-2 text-center border-b border-[#000000]">
+                      จำนวน
+                    </th>
+                    <th className="px-1 py-2 border-b border-[#000000]">
+                      ราคา
+                    </th>
+                    <th className="pr-5 py-2 text-center border-b border-[#000000]">
+                      หมวดหมู่
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {selectedOrderData &&
+                  Array.isArray(selectedOrderData.order_table) ? (
+                    selectedOrderData.order_table.map((item, index) => (
+                      <tr
+                        key={index}
+                        className="cursor-pointer hover:bg-gray-100"
+                      >
+                        <td className="text-center border-b border-[#F1F4F7]">
+                          {item.menu_name}
+                        </td>
+                        <td className="py-2 text-center border-b border-[#F1F4F7]">
+                          {item.quantity}
+                        </td>
+                        <td className="py-2 text-center border-b border-[#F1F4F7]">
+                          {item.amount} บาท
+                        </td>
+                        <td className="py-2 flex justify-center text-center border-b border-[#F1F4F7]">
+                          <div className="border border-[#70AB8E] text-[#70AB8E] rounded-full w-24">
+                            {item.category_name === "null"
+                              ? item.category_name
+                              : "ไม่มีกลุ่ม"}
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td
+                        colSpan="4"
+                        className="text-center py-4 text-gray-500"
+                      >
+                        ไม่มีข้อมูล
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="grid grid-cols-4 gap-2 mt-6">
+              <p className="col-span-1">เวลาที่สั่งซื้อ </p>
+              <p className="col-span-3">
+                {" "}
+                {new Intl.DateTimeFormat("th-TH", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  second: "2-digit",
+                  timeZone: "Asia/Bangkok",
+                }).format(new Date(selectedOrderData.order_date))}{" "}
+                น.
+              </p>
+              <p className="col-span-1">ราคาสุทธิ </p>
+              <p className="col-span-3">{selectedOrderData.total_amount} บาท</p>
+              <p className="col-span-1">ช่องทางการชำระเงิน </p>
+              <p className="col-span-3">
+                {selectedOrderData.payment_method === "cash"
+                  ? "เงินสด"
+                  : "QR Code"}
+              </p>
+            </div>
+            <div className="flex justify-center mt-3">
+              <button
+                className="px-14 py-4 w-[300px] border rounded-full text-[#DD9F52] border-[#DD9F52] hover:bg-[#f5e9dc] transition-colors font-bold"
+                onClick={closeModal}
+              >
+                ย้อนกลับ
+              </button>
             </div>
           </div>
         </div>

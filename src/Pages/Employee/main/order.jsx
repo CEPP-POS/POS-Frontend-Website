@@ -17,6 +17,7 @@ import CheckSlip from "../../../Components/Employee/checkSlip";
 import PayWithCash from "../../../Components/Employee/payWithCash";
 import { useWebSocket } from "../../../webSocketContext";
 import LoadingPopup from "../../../Components/General/loadingPopup";
+import { MdOutlineCloudSync } from "react-icons/md";
 
 const Order = () => {
   const environment = process.env.NODE_ENV || "development";
@@ -86,6 +87,8 @@ const Order = () => {
       setIsLoading(false);
     }
   };
+
+  console.log("ORDER DATA:", orders);
 
   useEffect(() => {
     if (socket) {
@@ -206,7 +209,7 @@ const Order = () => {
           order_date: new Date().toISOString(),
           total_price: cashPaymentData.totalAmount,
           queue_number: null,
-          status: "รอทำ",
+          status: "canceled",
           payment_method: "cash",
           cash_given: 0,
           change: 0,
@@ -244,7 +247,6 @@ const Order = () => {
     } finally {
       setLoading(false);
     }
-
     setShowPayWithCash(false);
   };
 
@@ -340,6 +342,20 @@ const Order = () => {
                                   ขนาด: {item.details[1]?.size_name || "-"}
                                 </>
                               )}
+                              {item.add_ons.length > 0 && (
+                                <>
+                                  {" "}
+                                  | ท็อปปิ้ง :{" "}
+                                  {item.add_ons.map((addOn, index) => (
+                                    <span key={index}>
+                                      {addOn.ingredient_name}
+                                      {index < item.add_ons.length - 1
+                                        ? ", "
+                                        : ""}
+                                    </span>
+                                  ))}
+                                </>
+                              )}
                             </span>
                           </div>
                         )
@@ -367,14 +383,14 @@ const Order = () => {
       </div>
 
       <div className="col-span-2 w-full">
-        <div className="grid grid-cols-2 gap-2 my-2 w-full">
+        <div className="grid grid-cols-3 gap-2 my-2 w-full">
           {/* Calendar */}
           <div className="py-2 flex justify-center items-center rounded-full w-full gap-2">
             <CiCalendar className="text-black" size={36} />
             <span className="pl-1 text-black text-2xl">{getTodayDate()}</span>
           </div>
 
-          {/* Button */}
+          {/* Pause Button */}
           <button
             onClick={handlePauseSection}
             className="py-2 bg-[#DD9F52] hover:bg-[#C68A47] text-white rounded-full w-full"
@@ -382,6 +398,17 @@ const Order = () => {
             <div className="flex justify-center items-center gap-2 text-2xl">
               <MdOutlinePauseCircleOutline size={36} />
               พักวัตถุดิบ / รายการสินค้า
+            </div>
+          </button>
+
+          {/* Sync Button */}
+          <button
+            onClick={null}
+            className="py-2 bg-[#DD9F52] hover:bg-[#C68A47] text-white rounded-full w-full"
+          >
+            <div className="flex justify-center items-center gap-2 text-2xl">
+              <MdOutlineCloudSync size={36} />
+              ซิงค์ข้อมูลออนไลน์
             </div>
           </button>
         </div>
@@ -464,7 +491,7 @@ const Order = () => {
                           order.order_items.length > 0 ? (
                             order.order_items.map(
                               (item, idx) => (
-                                console.log("ITEM DATA IN MAP:", item),
+                                console.log("ITEM DATA IN MAP SLICE:", item),
                                 (
                                   <div key={idx} className="mb-2">
                                     <div className="flex justify-between text-2xl">
@@ -485,6 +512,20 @@ const Order = () => {
                                           {item.details[0]?.level_name || "-"} |
                                           ขนาด:{" "}
                                           {item.details[1]?.size_name || "-"}
+                                        </>
+                                      )}
+                                      {item.add_ons.length > 0 && (
+                                        <>
+                                          {" "}
+                                          | ท็อปปิ้ง :{" "}
+                                          {item.add_ons.map((addOn, index) => (
+                                            <span key={index}>
+                                              {addOn.ingredient_name}
+                                              {index < item.add_ons.length - 1
+                                                ? ", "
+                                                : ""}
+                                            </span>
+                                          ))}
                                         </>
                                       )}
                                     </span>
@@ -516,6 +557,7 @@ const Order = () => {
           imageUrl={checkSlipData}
           onConfirm={handleConfirmSlip}
           total={totalAmountSlipData}
+          onClose={() => setCheckSlipData(null)}
         />
       )}
       <PayWithCash
