@@ -282,7 +282,9 @@ const ChoiceList = () => {
               renderSection(type, items)
             )
           ) : (
-            <p className="text-gray-500 text-center">ไม่มีกลุ่มรายการสินค้า</p>
+            <p className="text-gray-500 text-center">
+              ไม่มีตัวเลือกรายการสินค้า
+            </p>
           )}
         </div>
 

@@ -174,7 +174,7 @@ const PauseMenu = () => {
             เมนูทั้งหมด
           </label>
           <button
-            className={`px-4 py-2 rounded-full ${
+            className={`px-4 py-2 rounded-full text-xl ${
               filter === "ทั้งหมด"
                 ? "bg-[#DD9F52] text-white"
                 : "border border-[#DD9F52] text-[#DD9F52]"
@@ -184,7 +184,7 @@ const PauseMenu = () => {
             ทั้งหมด
           </button>
           <button
-            className={`px-4 py-2 rounded-full ${
+            className={`px-4 py-2 rounded-full text-xl ${
               filter === "เมนูที่ไม่พัก"
                 ? "bg-[#DD9F52] text-white"
                 : "border border-[#DD9F52] text-[#DD9F52]"
@@ -194,7 +194,7 @@ const PauseMenu = () => {
             เมนูที่ไม่พัก
           </button>
           <button
-            className={`px-4 py-2 rounded-full ${
+            className={`px-4 py-2 rounded-full text-xl ${
               filter === "เมนูที่พัก"
                 ? "bg-[#DD9F52] text-white"
                 : "border border-[#DD9F52] text-[#DD9F52]"
@@ -209,7 +209,7 @@ const PauseMenu = () => {
       <div className="w-full ml-2">
         <div className="w-full grid grid-cols-3 gap-4 mb-8 mt-4">
           {filteredMenuItems.map((menu, index) => (
-            <label key={index} className="flex items-center space-x-2">
+            <label key={index} className="flex items-center space-x-2 text-xl">
               <input
                 type="checkbox"
                 checked={selectedMenuItems.includes(menu) || menu.paused}

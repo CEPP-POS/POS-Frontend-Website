@@ -147,7 +147,7 @@ const Summary = () => {
                     colSpan="4"
                     className="text-center py-4 text-gray-500 text-2xl"
                   >
-                    ยังไม่มีสินค้าในตระกร้าขณะนี้
+                    ยังไม่มีสินค้าในตะกร้าขณะนี้
                   </td>
                 </tr>
               ) : (

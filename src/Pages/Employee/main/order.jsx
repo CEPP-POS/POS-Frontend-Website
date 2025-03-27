@@ -454,7 +454,7 @@ const Order = () => {
 
         {/* Order Cards */}
         <div className="overflow-x-auto">
-          <div className="flex space-x-8">
+          <div className="flex space-x-8 bg-[#F5F5F5]">
             {!isLoading && orders && orders.length > 1
               ? orders
                   .sort((a, b) => a.order_id - b.order_id)

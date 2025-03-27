@@ -7,6 +7,7 @@ import OrderAndCancelCard from "../../../../Components/Owner/orderAndCancelCard"
 import PaymentMethodFilter from "../../../../Components/Owner/paymentMethodFilter";
 import ThaiVirtualKeyboardInput from "../../../../Components/Common/ThaiVirtualKeyboardInput";
 import CheckSlip from "../../../../Components/Employee/checkSlip";
+import { IoMdClose } from "react-icons/io";
 
 const OrderSummary = () => {
   const environment = process.env.NODE_ENV || "development";
@@ -154,7 +155,7 @@ const OrderSummary = () => {
   return (
     <div className="h-screen-website bg-[#F5F5F5]">
       <SideBar menuTab={"orderSummary"} />
-      <div className="px-10">
+      <div className="px-10 bg-[#F5F5F5]">
         <h1 className="font-bold text-3xl mt-[40px]">ออเดอร์ทั้งหมด</h1>
         <span className="flex justify-end">
           <CalendarSelect setSelectedDate={setSelectedDate} />
@@ -174,7 +175,7 @@ const OrderSummary = () => {
         />
 
         {/* Table Section */}
-        <div className="overflow-x-auto border rounded-lg p-5">
+        <div className="overflow-x-auto border rounded-lg p-5 mb-16">
           <div>
             <div className="my-3">
               <div className="flex justify-between items-center space-x-4">
@@ -319,8 +320,16 @@ const OrderSummary = () => {
       {selectedOrderData && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
           <div className="bg-[#F5F5F5] p-10 rounded-lg shadow-lg w-[1024px] overflow-y-auto">
+            <div className="flex justify-end items-center">
+              <button
+                className="text-gray-500 hover:text-[#DD9F52] "
+                onClick={closeModal}
+              >
+                <IoMdClose size={28} />
+              </button>
+            </div>
             <div className="flex justify-center">
-              <h2 className="text-3lg font-bold mb-4">ออเดอร์</h2>
+              <h2 className="text-3xl font-bold mb-4">รายละเอียดออเดอร์</h2>
             </div>
             <p>
               <strong>หมายเลขออเดอร์ {selectedOrder}</strong>
@@ -385,7 +394,7 @@ const OrderSummary = () => {
             </div>
 
             <div className="grid grid-cols-4 gap-2 mt-6">
-              <p className="col-span-1">เวลาที่สั่งซื้อ </p>
+              <p className="col-span-1 font-bold">เวลาที่สั่งซื้อ </p>
               <p className="col-span-3">
                 {" "}
                 {new Intl.DateTimeFormat("th-TH", {
@@ -399,22 +408,14 @@ const OrderSummary = () => {
                 }).format(new Date(selectedOrderData.order_date))}{" "}
                 น.
               </p>
-              <p className="col-span-1">ราคาสุทธิ </p>
+              <p className="col-span-1 font-bold">ราคาสุทธิ </p>
               <p className="col-span-3">{selectedOrderData.total_amount} บาท</p>
-              <p className="col-span-1">ช่องทางการชำระเงิน </p>
+              <p className="col-span-1 font-bold">ช่องทางการชำระเงิน </p>
               <p className="col-span-3">
                 {selectedOrderData.payment_method === "cash"
                   ? "เงินสด"
                   : "QR Code"}
               </p>
-            </div>
-            <div className="flex justify-center mt-3">
-              <button
-                className="px-14 py-4 w-[300px] border rounded-full text-[#DD9F52] border-[#DD9F52] hover:bg-[#f5e9dc] transition-colors font-bold"
-                onClick={closeModal}
-              >
-                ย้อนกลับ
-              </button>
             </div>
           </div>
         </div>

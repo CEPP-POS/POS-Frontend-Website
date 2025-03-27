@@ -339,7 +339,7 @@ const Stock = () => {
     <div className="bg-[#F5F5F5] h-screen-website">
       <SideBar menuTab={"stock"} />
       <div className="px-10 mt-[40px]">
-        <h1 className="font-bold text-3xl ">คลังสินค้า</h1>
+        <h1 className="font-bold text-3xl">คลังสินค้า</h1>
         <div className="flex justify-between items-center">
           <span className="flex items-center">
             <span className="font-bold mt-2">หมวดหมู่</span>
@@ -703,13 +703,13 @@ const Stock = () => {
               {/* Buttons */}
               <div className="flex justify-between mt-6">
                 <button
-                  className="px-6 py-3 border rounded-full text-[#DD9F52] border-[#DD9F52] hover:bg-[#f5e9dc] transition-colors font-bold"
+                  className="w-[110px] h-[50px] border rounded-full text-[#DD9F52] border-[#DD9F52] hover:bg-[#f5e9dc] transition-colors font-bold"
                   onClick={closeModal}
                 >
                   ย้อนกลับ
                 </button>
                 <button
-                  className="px-6 py-3 bg-[#DD9F52] text-white rounded-full hover:bg-[#C68A47] transition-colors font-bold"
+                  className="w-[110px] h-[50px] bg-[#DD9F52] text-white rounded-full hover:bg-[#C68A47] transition-colors font-bold"
                   onClick={handleUpdateSubmit}
                 >
                   บันทึก
@@ -781,7 +781,7 @@ const Stock = () => {
                               setIsAddingUpdate(false); // Open modal in update mode
                               setModalVisible(true);
                             }}
-                            className="text-[#DD9F52] bg-[#F5F5F5] border border-[#DD9F52] focus:outline-none hover:bg-[#DD9F52] hover:text-white focus:ring-4 focus:ring-gray-100 font-medium rounded-full text-sm px-4 py-1"
+                            className="text-[#DD9F52] bg-[#F5F5F5] border border-[#DD9F52] focus:outline-none hover:bg-[#DD9F52] hover:text-white focus:ring-4 focus:ring-gray-100 rounded-full px-4 py-1"
                           >
                             อัปเดต
                           </button>
@@ -796,7 +796,7 @@ const Stock = () => {
               <div className="mt-4 flex justify-between">
                 <button
                   onClick={() => setHistoryModalVisible(false)}
-                  className="px-6 py-2 border rounded-full text-[#DD9F52] border-[#DD9F52] hover:bg-[#f5e9dc] transition-colors font-bold"
+                  className="w-[150px] h-[50px] border rounded-full text-[#DD9F52] border-[#DD9F52] hover:bg-[#f5e9dc] transition-colors font-bold"
                 >
                   ปิด
                 </button>
@@ -817,7 +817,7 @@ const Stock = () => {
                     setIsAddingUpdate(true); // Open modal in add mode
                     setModalVisible(true);
                   }}
-                  className="px-6 py-2 bg-[#DD9F52] text-white rounded-full hover:bg-[#C68A47] transition-colors font-bold"
+                  className="w-[150px] h-[50px] bg-[#DD9F52] text-white rounded-full hover:bg-[#C68A47] transition-colors font-bold"
                 >
                   เพิ่มการอัปเดต
                 </button>

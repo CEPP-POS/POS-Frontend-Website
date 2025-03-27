@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { FaPowerOff } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
+import { TbLogout } from "react-icons/tb";
 
 const LogoutButton = () => {
   const navigate = useNavigate();
@@ -12,7 +13,7 @@ const LogoutButton = () => {
 
   const handleConfirmLogout = () => {
     setShowModal(false);
-    navigate("/"); // Redirect to the homepage after logout
+    navigate("/");
   };
 
   const handleCancelLogout = () => {
@@ -23,31 +24,32 @@ const LogoutButton = () => {
     <>
       <button
         onClick={handleLogoutButton}
-        className="bg-[#EFEFEF] text-[#FF5555] hover:bg-[#FF5555] hover:text-[#EFEFEF] rounded-full p-1 flex justify-center items-center"
+        className="flex p-2 text-white hover:text-red-600 transition-all duration-300"
       >
-        <FaPowerOff size={32} />
+        <TbLogout size={24} />
+        <span className="text-xl font-bold">ออกจากระบบ</span>
       </button>
 
       {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-[#F5F5F5] rounded-lg shadow-lg p-6 w-96">
-            <h2 className="text-xl font-semibold text-center mb-4">
-              ยืนยันการออกจากระบบ
+        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center z-1">
+          <div className="bg-[#F5F5F5] p-8 rounded-lg w-[700px] h-[300px] shadow-lg flex flex-col justify-center items-center text-center">
+            <h2 className="text-3xl mb-4 text-black font-bold">
+              ยืนยันการออกจากระบบ ?
             </h2>
-            <p className="text-gray-700 text-center mb-6">
+            <p className="text-gray-600 mb-8">
               หากกดยืนยันแล้วจะต้องเข้าสู่ระบบใหม่อีกครั้ง
             </p>
-            <div className="flex justify-between">
+            <div className="w-full flex justify-between space-x-8">
               <button
                 onClick={handleCancelLogout}
-                className="bg-gray-300 text-gray-700 hover:bg-gray-400 rounded-full px-4 py-2"
+                className="px-8 py-3 w-[250px] font-bold border rounded-full text-[#DD9F52] border-[#DD9F52] hover:bg-[#f5e9dc] transition-colors"
               >
                 ยกเลิก
               </button>
               <button
                 onClick={handleConfirmLogout}
-                className="bg-[#C94C4C] text-white hover:bg-red-600 rounded-full px-4 py-2"
+                className="px-8 py-3 w-[250px] bg-[#DD9F52] font-bold text-white rounded-full hover:bg-[#C68A47] transition-colors"
               >
                 ยืนยัน
               </button>

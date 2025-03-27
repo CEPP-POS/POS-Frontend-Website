@@ -6,6 +6,7 @@ import { TbLogout } from "react-icons/tb";
 import { PiShoppingCart } from "react-icons/pi";
 import { GoGraph } from "react-icons/go";
 import { BsBox2 } from "react-icons/bs";
+import LogoutButton from "../General/logoutButton";
 
 const SideBar = ({ menuTab }) => {
   const navigate = useNavigate();
@@ -67,13 +68,14 @@ const SideBar = ({ menuTab }) => {
           </a>
 
           {/* menu list */}
-          <div className="flex items-center space-x-6 w-auto text-white mr-8">
+          <div className="flex items-center space-x-6 w-auto mr-8">
             {/* home */}
             <button
               onClick={() => navigate("/role")}
-              className="flex p-2 text-black hover:text-[#C68A47] transition-all duration-300"
+              className="flex p-2 text-black hover:text-[rgb(198,138,71)] transition-all duration-300"
             >
               <HiOutlineHome size={24} className="text-white" />
+              <span className="text-xl font-bold text-white">หน้าหลัก</span>
             </button>
 
             {/* dashboard */}
@@ -82,29 +84,37 @@ const SideBar = ({ menuTab }) => {
               className="flex p-2 text-white hover:text-[#C68A47] transition-all duration-300"
             >
               <div
-                className={`flex items-center p-2 text-gray-900 rounded-lg ${
-                  menuTab === "overview"
-                    ? "bg-[#C68A47]"
-                    : "hover:bg-transparent"
+                className={`flex items-center p-2 rounded-lg ${
+                  menuTab === "overview" ? "text-[#C68A47]" : "text-white"
                 }`}
               >
-                <TiThLargeOutline size={24} className="text-white" />
+                <TiThLargeOutline
+                  size={24}
+                  className={`${
+                    menuTab === "overview" ? "text-[#C68A47]" : "text-white"
+                  }`}
+                />
+                <span className="text-xl font-bold">ภาพรวมการขาย</span>
               </div>
             </button>
 
             {/* order */}
             <button
               onClick={handleOrderSummary}
-              className="flex p-2 text-white hover:text-[#C68A47] transition-all duration-300"
+              className="flex p-2 hover:text-[#C68A47] transition-all duration-300"
             >
               <div
-                className={`flex items-center p-2 text-gray-900 rounded-lg  ${
-                  menuTab === "orderSummary"
-                    ? "bg-[#C68A47]"
-                    : "hover:bg-transparent"
+                className={`flex items-center p-2 rounded-lg ${
+                  menuTab === "orderSummary" ? "text-[#C68A47]" : "text-white"
                 }`}
               >
-                <PiShoppingCart size={24} className="text-white" />
+                <PiShoppingCart
+                  size={24}
+                  className={`${
+                    menuTab === "orderSummary" ? "text-[#C68A47]" : "text-white"
+                  }`}
+                />
+                <span className="text-xl font-bold">ประวัติออเดอร์</span>
               </div>
             </button>
 
@@ -114,13 +124,21 @@ const SideBar = ({ menuTab }) => {
               className="flex p-2 text-white hover:text-[#C68A47] transition-all duration-300"
             >
               <div
-                className={`flex items-center p-2 text-gray-900 rounded-lg  ${
+                className={`flex items-center p-2 rounded-lg ${
                   menuTab === "saleSummaryGraph"
-                    ? "bg-[#C68A47]"
-                    : "hover:bg-transparent"
+                    ? "text-[#C68A47]"
+                    : "text-white"
                 }`}
               >
-                <GoGraph size={24} className="text-white" />
+                <GoGraph
+                  size={24}
+                  className={`${
+                    menuTab === "saleSummaryGraph"
+                      ? "text-[#C68A47]"
+                      : "text-white"
+                  }`}
+                />
+                <span className="text-xl font-bold">สรุปรายเดือน</span>
               </div>
             </button>
 
@@ -130,20 +148,23 @@ const SideBar = ({ menuTab }) => {
               className="flex p-2 text-white hover:text-[#C68A47] transition-all duration-300"
             >
               <div
-                className={`flex items-center p-2 text-gray-900 rounded-lg  ${
-                  menuTab === "stock" ? "bg-[#C68A47]" : "hover:bg-transparent"
+                className={`flex items-center p-2 rounded-lg ${
+                  menuTab === "stock" ? "text-[#C68A47]" : "text-white"
                 }`}
               >
-                <BsBox2 size={24} className="text-white" />
+                <BsBox2
+                  size={24}
+                  className={`${
+                    menuTab === "stock" ? "text-[#C68A47]" : "text-white"
+                  }`}
+                />
+                <span className="text-xl font-bold ml-1">คลังสินค้า</span>
               </div>
             </button>
 
             {/* log out */}
-            <button
-              onClick={() => navigate("/")}
-              className="flex p-2 text-black hover:text-red-600 transition-all duration-300"
-            >
-              <TbLogout size={24} className="text-white" />
+            <button className="flex p-2 text-black hover:text-red-600 transition-all duration-300">
+              <LogoutButton />
             </button>
           </div>
         </div>

@@ -127,7 +127,7 @@ const Menu = () => {
   };
 
   return (
-    <div className="font-noto flex flex-col bg-[#F5F5F5] mb-8">
+    <div className="font-noto flex flex-col bg-white mb-8">
       {/* Cart */}
       <div className="flex justify-end items-center mb-6 relative">
         <button onClick={handleAddToCart} className="relative">

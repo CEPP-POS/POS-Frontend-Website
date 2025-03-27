@@ -50,7 +50,7 @@ const Login = () => {
 
         sessionStorage.setItem("token", userData.token);
         sessionStorage.setItem("owner_id", decodedToken.owner_id);
-        sessionStorage.setItem("branch_id", decodedToken.branch_id);
+        // sessionStorage.setItem("branch_id", decodedToken.branch_id);
         sessionStorage.setItem("role", decodedToken.roles[0]);
 
         const passwordReset = sessionStorage.getItem("password_reset");
@@ -58,7 +58,7 @@ const Login = () => {
         if (passwordReset === "true") {
           navigate("/role");
         } else {
-          navigate("/enter-new-password");
+          navigate("/branch");
         }
       } else {
         const errorData = await response.json();

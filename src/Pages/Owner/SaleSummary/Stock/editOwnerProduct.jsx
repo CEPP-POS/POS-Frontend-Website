@@ -124,7 +124,6 @@ const EditOwnerProduct = () => {
         setUnitOption(data.unit || "");
         setProductName(data.ingredient_name);
         setCategoryOption(data.category_name || "");
-        
       } catch (error) {
         console.error("Error fetching product data:", error);
       }
@@ -371,7 +370,7 @@ const EditOwnerProduct = () => {
             ย้อนกลับ
           </button>
           <button
-            className="px-6 py-2 bg-[#DD9F52] text-white rounded-full hover:bg-[#C68A47] transition-colors font-bold"
+            className="px-6 py-2 w-[300px] bg-[#DD9F52] text-white rounded-full hover:bg-[#C68A47] transition-colors font-bold"
             onClick={handleSave}
           >
             บันทึก

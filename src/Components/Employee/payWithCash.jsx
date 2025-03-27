@@ -98,13 +98,13 @@ const PayWithCash = ({ isOpen, onClose, totalAmount, onConfirm, onCancel }) => {
         <div className="flex justify-between">
           <button
             onClick={onCancel}
-            className="text-[#DD9F52] w-40 bg-[#F5F5F5] border border-[#DD9F52] hover:bg-[#DD9F52] hover:text-white rounded-full text-xl px-4 py-2"
+            className="text-[#DD9F52] font-bold w-40 bg-[#F5F5F5] border border-[#DD9F52] hover:bg-[#DD9F52] hover:text-white rounded-full text-xl px-4 py-2"
           >
             ยกเลิก
           </button>
           <button
             onClick={handleConfirm}
-            className="w-40 bg-[#DD9F52] hover:bg-[#C68A47] text-white font-bold py-2 px-4 rounded-full"
+            className="w-40 bg-[#DD9F52] hover:bg-[#C68A47] text-white font-bold py-2 px-4 rounded-full "
           >
             ยืนยันออเดอร์
           </button>

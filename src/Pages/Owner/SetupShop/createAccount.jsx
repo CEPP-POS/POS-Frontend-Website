@@ -38,7 +38,7 @@ const CreateAccount = () => {
       const response = await fetchApi(`${URL}/owner/create-employee`, "POST", {
         email: email,
         password: password,
-        branch_id: 3, //mock branch id for now
+        branch_id: branchId, //mock branch id for now
       });
 
       if (response.ok) {

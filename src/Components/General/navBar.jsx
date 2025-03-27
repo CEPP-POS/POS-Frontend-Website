@@ -6,6 +6,7 @@ import { PiUserCircleBold } from "react-icons/pi";
 import { AiOutlineBranches } from "react-icons/ai";
 import fetchApi from "../../Config/fetchApi";
 import configureAPI from "../../Config/configureAPI";
+import LogoutButton from "./logoutButton";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -99,20 +100,31 @@ const Navbar = () => {
                 <div className="absolute left-0 mt-14 z-10 bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-white-700">
                   <ul className="py-2 text-black">
                     {branches.length > 0 ? (
-                      branches.map((branch) => (
-                        <li key={branch.branch_id}>
-                          <button className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-white-600">
-                            {branch.branch_name}
-                          </button>
-                        </li>
-                      ))
+                      // branches.map((branch) => (
+                      //   <li key={branch.branch_id}>
+                      //     <button className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-white-600">
+                      //       {branch.branch_name} {branch.branch_address}
+                      //     </button>
+                      //   </li>
+                      // ))
+                      <li>
+                        <button
+                          className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-white-600"
+                          onClick={() => navigate("/branch")}
+                        >
+                          หน้าหลักสาขา
+                        </button>
+                      </li>
                     ) : (
                       <li className="px-4 py-2 text-gray-500">
                         ไม่มีข้อมูลสาขา
                       </li>
                     )}
                     <li>
-                      <button className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-white-600">
+                      <button
+                        className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-white-600"
+                        onClick={() => navigate("/sync-branch")}
+                      >
                         ซิงค์ข้อมูลสาขา
                       </button>
                     </li>
@@ -122,12 +134,8 @@ const Navbar = () => {
             </button>
           </div>
 
-          <button
-            onClick={handleLogout}
-            className="flex p-2 text-white hover:text-red-600 transition-all duration-300"
-          >
-            <TbLogout size={24} />
-            <span className="text-xl font-bold">ออกจากระบบ</span>
+          <button className="flex p-2 text-white hover:text-red-600 transition-all duration-300">
+            <LogoutButton />
           </button>
           {role && (
             <div className="flex items-center justify-center w-[150px] p-1 space-x-1 bg-[#DD9F52] rounded-full">

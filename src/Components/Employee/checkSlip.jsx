@@ -133,7 +133,7 @@ const CheckSlip = ({ imageUrl, onConfirm, total,onClose  }) => {
 
         <div className="flex gap-2 mt-6">
           <button
-            className="w-full border border-gray-300 text-gray-600 hover:bg-gray-100 transition-all duration-300 py-2 rounded-full"
+            className="w-full border border-gray-300 text-gray-600 hover:bg-gray-100 transition-all duration-300 py-2 rounded-full font-bold"
             onClick={handleCancel}
           >
             ยกเลิก
