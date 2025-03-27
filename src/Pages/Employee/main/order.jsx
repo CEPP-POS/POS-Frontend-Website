@@ -18,10 +18,13 @@ import PayWithCash from "../../../Components/Employee/payWithCash";
 import { useWebSocket } from "../../../webSocketContext";
 import LoadingPopup from "../../../Components/General/loadingPopup";
 import { MdOutlineCloudSync } from "react-icons/md";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 const Order = () => {
   const environment = process.env.NODE_ENV || "development";
   const URL = configureAPI[environment].URL;
+  const MySwal = withReactContent(Swal);
 
   const navigate = useNavigate();
   const handlePauseSection = () => {

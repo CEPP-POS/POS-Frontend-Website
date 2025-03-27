@@ -109,7 +109,7 @@ const SideBar = ({ menuTab }) => {
                   {selectedBranch.branch_name} {selectedBranch.branch_address}
                 </p>
               ) : (
-                <p>สุขเสมอคาเฟ่</p>
+                <p></p>
               )}
             </span>
           </a>

@@ -9,10 +9,13 @@ import { AiOutlineDelete } from "react-icons/ai";
 import { useLocation } from "react-router-dom";
 import ThaiVirtualKeyboardInput from "../../../../Components/Common/ThaiVirtualKeyboardInput";
 import LoadingPopup from "../../../../Components/General/loadingPopup";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 const GlassChoice = () => {
   const environment = process.env.NODE_ENV || "development";
   const URL = configureAPI[environment].URL;
+  const MySwal = withReactContent(Swal);
 
   const navigate = useNavigate();
   const groupedMenus = [];
@@ -199,6 +202,12 @@ const GlassChoice = () => {
 
           if (response.ok) {
             navigate("/choice-list");
+            MySwal.fire({
+              icon: "success",
+              title: "เพิ่ม/จัดการข้อมูลขนาดแก้วสำเร็จ",
+              timer: 2000,
+              showConfirmButton: false,
+            });
           } else {
             const errorData = await response.json();
             console.error("Error response:", errorData);

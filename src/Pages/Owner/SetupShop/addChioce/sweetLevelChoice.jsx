@@ -9,10 +9,13 @@ import configureAPI from "../../../../Config/configureAPI";
 import { useSelector } from "react-redux";
 import ThaiVirtualKeyboardInput from "../../../../Components/Common/ThaiVirtualKeyboardInput";
 import LoadingPopup from "../../../../Components/General/loadingPopup";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 const SweetLevelChoice = () => {
   const environment = process.env.NODE_ENV || "development";
   const URL = configureAPI[environment].URL;
+  const MySwal = withReactContent(Swal);
 
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
@@ -180,6 +183,12 @@ const SweetLevelChoice = () => {
 
           if (response.ok) {
             navigate("/choice-list");
+            MySwal.fire({
+              icon: "success",
+              title: "เพิ่ม/จัดการข้อมูลความหวานสำเร็จ",
+              timer: 2000,
+              showConfirmButton: false,
+            });
           } else {
             const errorData = await response.json();
             console.error("Error response:", errorData);

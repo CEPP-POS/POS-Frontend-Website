@@ -9,12 +9,15 @@ import ThaiVirtualKeyboardInput from "../../../../Components/Common/ThaiVirtualK
 import LoadingPopup from "../../../../Components/General/loadingPopup";
 import { AiOutlineCheckCircle } from "react-icons/ai";
 import { IoIosArrowDown } from "react-icons/io";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 const EditOwnerProduct = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const environment = process.env.NODE_ENV || "development";
   const URL = configureAPI[environment].URL;
+  const MySwal = withReactContent(Swal);
 
   const [productData, setProductData] = useState(null);
   const [productName, setProductName] = useState();
@@ -189,6 +192,12 @@ const EditOwnerProduct = () => {
 
       if (response.ok) {
         setIsModalOpen(true);
+        MySwal.fire({
+          icon: "success",
+          title: "แก้ไขข้อมูลวัตถุดิบสำเร็จ",
+          timer: 2000,
+          showConfirmButton: false,
+        });
       } else {
         console.error("Failed to update ingredient");
       }

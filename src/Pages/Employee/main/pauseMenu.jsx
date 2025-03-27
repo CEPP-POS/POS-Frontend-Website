@@ -11,10 +11,13 @@ import {
 } from "../../../Components/General/statusPopup";
 import LoadingPopup from "../../../Components/General/loadingPopup";
 import { useWebSocket } from "../../../webSocketContext";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 const PauseMenu = () => {
   const environment = process.env.NODE_ENV || "development";
   const URL = configureAPI[environment].URL;
+  const MySwal = withReactContent(Swal);
 
   const navigate = useNavigate();
   const socket = useWebSocket();
@@ -108,6 +111,14 @@ const PauseMenu = () => {
       setSuccessMessage("บันทึกข้อมูลเสร็จสิ้น");
       setFailMessage("");
       setSelectedMenuItems([]);
+
+      MySwal.fire({
+        icon: "success",
+        title: "พักเมนูสำเร็จ",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+
       navigate("/pause-section");
       if (socket) {
         socket.send(JSON.stringify({ type: "PAUSE_MENU" }));

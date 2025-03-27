@@ -56,7 +56,7 @@ const SyncBranch = () => {
     setLoading(true);
     try {
       const response = await fetchApi(
-        `${URL}/branches/owner/clone-branch-setup/${selectedBranch.branch_id}`,
+        `${URL}/branches/owner/clone-branch-setup/${selectedBranch.id}`,
         "POST"
       );
 
@@ -66,8 +66,6 @@ const SyncBranch = () => {
           title: "ซิงค์ข้อมูลสาขาสำเร็จ",
           timer: 2000,
           showConfirmButton: false,
-        }).then(() => {
-          navigate("/role");
         });
       } else {
         MySwal.fire({

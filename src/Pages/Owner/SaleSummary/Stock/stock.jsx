@@ -18,6 +18,8 @@ import ThaiVirtualKeyboardInput from "../../../../Components/Common/ThaiVirtualK
 import { AiOutlineDelete } from "react-icons/ai";
 import LoadingPopup from "../../../../Components/General/loadingPopup";
 import DeleteIngredientModal from "../../../../Components/Owner/deleteIngredient";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 const thLocaleWithMondayStart = {
   ...th,
@@ -30,6 +32,7 @@ const thLocaleWithMondayStart = {
 const Stock = () => {
   const environment = process.env.NODE_ENV || "development";
   const URL = configureAPI[environment].URL;
+  const MySwal = withReactContent(Swal);
 
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
@@ -265,6 +268,12 @@ const Stock = () => {
 
       await fetchProducts();
       setModalVisible(false);
+      MySwal.fire({
+        icon: "success",
+        title: "แก้ไขข้อมูลคลังสินค้าสำเร็จ",
+        timer: 2000,
+        showConfirmButton: false,
+      });
     } catch (error) {
       console.error("Error updating/creating product:", error);
       alert(`เกิดข้อผิดพลาด: ${error.message}`);
@@ -283,6 +292,12 @@ const Stock = () => {
       if (response.ok) {
         console.log("Ingredient removed successfully!");
         await fetchProducts(); // Refresh the ingredient list
+        MySwal.fire({
+          icon: "success",
+          title: "ลบวัตถุดิบสำเร็จ",
+          timer: 2000,
+          showConfirmButton: false,
+        });
       } else {
         throw new Error("Failed to remove ingredient");
       }

@@ -9,12 +9,15 @@ import { AiOutlineDelete } from "react-icons/ai";
 import IngredientDropdown from "../../../../Components/General/ingredientDropdown";
 import ThaiVirtualKeyboardInput from "../../../../Components/Common/ThaiVirtualKeyboardInput";
 import LoadingPopup from "../../../../Components/General/loadingPopup";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 const AddStockForm = () => {
   const location = useLocation();
   const { menu, menu_id } = location.state || {};
   const environment = process.env.NODE_ENV || "development";
   const URL = configureAPI[environment].URL;
+  const MySwal = withReactContent(Swal);
 
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
@@ -210,7 +213,7 @@ const AddStockForm = () => {
             ...row,
             [field]: value,
             material: field === "ingredientId" ? label || value : row.material,
-            unit: field === "ingredientId" ? unit || "" : value, 
+            unit: field === "ingredientId" ? unit || "" : value,
           };
         }
         return row;
@@ -391,6 +394,12 @@ const AddStockForm = () => {
         if (response.ok) {
           console.log("Stock data saved successfully!");
           navigate("/stock-list");
+          MySwal.fire({
+            icon: "success",
+            title: "ผูกข้อมูลคลังสินค้าสำเร็จ",
+            timer: 2000,
+            showConfirmButton: false,
+          });
         } else {
           console.error("Failed to save stock data");
         }

@@ -9,11 +9,14 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import ThaiVirtualKeyboardInput from "../../../../Components/Common/ThaiVirtualKeyboardInput";
 import LoadingPopup from "../../../../Components/General/loadingPopup";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 const AddOwnerProduct = () => {
   const navigate = useNavigate();
   const environment = process.env.NODE_ENV || "development";
   const URL = configureAPI[environment].URL;
+  const MySwal = withReactContent(Swal);
 
   const [productImage, setProductImage] = useState(null);
   const [productName, setProductName] = useState("");
@@ -146,6 +149,12 @@ const AddOwnerProduct = () => {
 
       if (response.ok) {
         setIsModalOpen(true);
+        MySwal.fire({
+          icon: "success",
+          title: "เพิ่มข้อมูลวัตถุดิบสำเร็จ",
+          timer: 2000,
+          showConfirmButton: false,
+        });
       } else {
         console.error("Failed to create ingredient");
       }

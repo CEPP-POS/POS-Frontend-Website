@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import "react-simple-keyboard/build/css/index.css";
 import fetchApi from "../../Config/fetchApi";
 import configureAPI from "../../Config/configureAPI";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 const DoneOrderButton = ({ order, onSuccess }) => {
   const environment = process.env.NODE_ENV || "development";
@@ -9,6 +11,7 @@ const DoneOrderButton = ({ order, onSuccess }) => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const MySwal = withReactContent(Swal);
 
   console.log("order", order);
 
@@ -67,6 +70,12 @@ const DoneOrderButton = ({ order, onSuccess }) => {
 
       if (response.ok) {
         console.log("Order completed successfully!");
+        MySwal.fire({
+          icon: "success",
+          title: "เสร็จสิ้นออเดอร์สำเร็จ",
+          timer: 2000,
+          showConfirmButton: false,
+        });
         // เรียกใช้ฟังก์ชันพูดหมายเลขคิว
         if (order.queue_number) {
           speakQueueNumber(order.queue_number);

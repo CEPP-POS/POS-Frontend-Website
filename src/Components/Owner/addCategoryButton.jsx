@@ -4,10 +4,13 @@ import configureAPI from "../../Config/configureAPI";
 import fetchApi from "../../Config/fetchApi";
 import ThaiVirtualKeyboardInput from "../Common/ThaiVirtualKeyboardInput";
 import LoadingPopup from "../General/loadingPopup";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 const AddCategoryButton = ({ onAdd }) => {
   const environment = process.env.NODE_ENV || "development";
   const URL = configureAPI[environment].URL;
+  const MySwal = withReactContent(Swal);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -31,6 +34,12 @@ const AddCategoryButton = ({ onAdd }) => {
         toggleModal();
         onAdd(categoryName);
         setCategoryName("");
+        MySwal.fire({
+          icon: "success",
+          title: "เพิ่มหมวดหมู่สำเร็จ",
+          timer: 2000,
+          showConfirmButton: false,
+        });
       }
     } catch (error) {
       console.error("Error create ingredient category:", error);
