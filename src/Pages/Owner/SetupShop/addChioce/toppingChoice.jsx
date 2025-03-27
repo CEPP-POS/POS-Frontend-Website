@@ -191,7 +191,7 @@ const ToppingChoice = () => {
               old_add_on_group_name: oldGroupName,
               new_add_on_group_name: groupName,
               options: choices.map((choice) => ({
-                add_on_id: choice.id?.toString() || "null",
+                add_on_id: choice.id?.toString() || null,
                 add_on_name: choice.name,
                 price: choice.price,
                 quantity: choice.quantity,
@@ -423,9 +423,9 @@ const ToppingChoice = () => {
               <span className="text-[#DD9F52] ml-2"> ท็อปปิ้ง</span>
             </div>
 
-            <div className="grid grid-cols-2 mb-4">
+            <div className="grid grid-cols-[auto_1fr] mb-4 justify-start">
               <div className="font-bold mb-2">ชื่อช้อยส์</div>
-              <div className="font-bold mb-2 ml-20">ปริมาณที่ใช้</div>
+              <div className="font-bold mb-2 ml-20 ">ปริมาณที่ใช้</div>
             </div>
 
             {/* Form Section */}

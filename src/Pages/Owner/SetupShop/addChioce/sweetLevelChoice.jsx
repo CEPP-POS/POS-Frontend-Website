@@ -150,7 +150,7 @@ const SweetLevelChoice = () => {
               old_sweetness_group_name: oldGroupName,
               new_sweetness_group_name: groupName,
               options: choices.map((choice) => ({
-                sweetness_id: choice.id || "null",
+                sweetness_id: choice.id || null,
                 level_name: choice.name,
               })),
               menu_id: selectedMenus,

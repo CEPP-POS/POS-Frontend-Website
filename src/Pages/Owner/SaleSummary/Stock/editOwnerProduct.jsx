@@ -196,6 +196,7 @@ const EditOwnerProduct = () => {
       console.error("Error updating ingredient:", error);
     } finally {
       setLoading(false);
+      navigate("/stock");
     }
   };
 
@@ -344,7 +345,7 @@ const EditOwnerProduct = () => {
         </div>
 
         {/* Modal */}
-        {isModalOpen && (
+        {/* {isModalOpen && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-[#F5F5F5] rounded-lg p-6 w-[400px] text-center">
               <AiOutlineCheckCircle
@@ -360,7 +361,7 @@ const EditOwnerProduct = () => {
               </button>
             </div>
           </div>
-        )}
+        )} */}
         {/* Save and Back buttons */}
         <div className="flex fixed bottom-0 left-0 px-4 py-4 pb-4 w-full space-x-8 justify-between bg-[#F5F5F5]">
           <button

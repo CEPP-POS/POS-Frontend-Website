@@ -166,7 +166,7 @@ const AddOwnerProduct = () => {
   };
 
   return (
-    <div className="h-screen-website bg-[#F5F5F5]">
+    <div className="h-screen-website bg-[#F5F5F5] pb-8 overflow-y-auto space-x-4 scrollbar-hide whitespace-nowrap">
       <SideBar menuTab={"stock"} />
       <div className="ml-8 mr-8">
         <h1 className="font-bold text-3xl">คลังสินค้า</h1>

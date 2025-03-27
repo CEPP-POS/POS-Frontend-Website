@@ -164,7 +164,7 @@ const TypeChoice = () => {
               old_menu_type_group_name: oldGroupName,
               new_menu_type_group_name: groupName,
               options: choices.map((choice) => ({
-                menu_type_id: choice.id?.toString() || "null",
+                menu_type_id: choice.id?.toString() || null,
                 type_name: choice.name,
                 price_difference: choice.price,
               })),

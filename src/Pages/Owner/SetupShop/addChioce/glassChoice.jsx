@@ -162,7 +162,7 @@ const GlassChoice = () => {
               options: choices.map((choice) => {
                 const priceValue = parseFloat(choice.price || "0");
                 return {
-                  size_id: choice.id?.toString() || "null",
+                  size_id: choice.id?.toString() || null,
                   size_name: choice.name,
                   price: priceValue,
                 };

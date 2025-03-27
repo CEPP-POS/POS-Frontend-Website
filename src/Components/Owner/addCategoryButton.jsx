@@ -36,6 +36,7 @@ const AddCategoryButton = ({ onAdd }) => {
       console.error("Error create ingredient category:", error);
     } finally {
       setLoading(false);
+      setCategoryName("");
     }
   };
 
