@@ -7,6 +7,7 @@ import { AiOutlineBranches } from "react-icons/ai";
 import fetchApi from "../../Config/fetchApi";
 import configureAPI from "../../Config/configureAPI";
 import LogoutButton from "./logoutButton";
+import { useEffect } from "react";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -18,6 +19,41 @@ const Navbar = () => {
   const role = sessionStorage.getItem("role");
   const owner_id = sessionStorage.getItem("owner_id");
   console.log("ROLE FROM TOKEN:", role);
+
+  const [selectedBranch, setSelectedBranch] = useState(null);
+  const ownerId = sessionStorage.getItem("owner_id");
+  const branchId = sessionStorage.getItem("branch_id");
+
+  console.log("branch ID", branchId);
+
+  useEffect(() => {
+    const fetchBranches = async () => {
+      try {
+        const response = await fetchApi(`${URL}/branches/owner/${ownerId}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch branches");
+        }
+        const data = await response.json();
+        setBranches(data);
+
+        const matchedBranch = data.find(
+          (branch) => branch.branch_id === Number(branchId)
+        );
+
+        if (matchedBranch) {
+          setSelectedBranch(matchedBranch);
+        } else {
+          console.log("No matching branch found.");
+        }
+      } catch (error) {
+        console.error("Error fetching branch data:", error);
+      }
+    };
+
+    fetchBranches();
+  }, [URL, branchId, ownerId]);
+
+  console.log("SELECT BRANCH", selectedBranch);
 
   const handleLogout = () => {
     sessionStorage.clear();
@@ -72,7 +108,13 @@ const Navbar = () => {
             <rect x="6" y="27" width="47" height="3" rx="1.5" fill="#2F2105" />
           </svg>
           <span className="self-center text-3xl font-semibold whitespace-nowrap text-white">
-            สุขเสมอคาเฟ่
+            {selectedBranch ? (
+              <p>
+                {selectedBranch.branch_name} {selectedBranch.branch_address}
+              </p>
+            ) : (
+              <p>สุขเสมอคาเฟ่</p>
+            )}
           </span>
         </a>
 

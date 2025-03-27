@@ -6,10 +6,22 @@ import { TbLogout } from "react-icons/tb";
 import { PiShoppingCart } from "react-icons/pi";
 import { GoGraph } from "react-icons/go";
 import { BsBox2 } from "react-icons/bs";
+import configureAPI from "../../Config/configureAPI";
 import LogoutButton from "../General/logoutButton";
+import { useEffect } from "react";
+import fetchApi from "../../Config/fetchApi";
+import { useState } from "react";
 
 const SideBar = ({ menuTab }) => {
   const navigate = useNavigate();
+
+  const [branches, setBranches] = useState([]);
+  const environment = process.env.NODE_ENV || "development";
+  const URL = configureAPI[environment].URL;
+
+  const [selectedBranch, setSelectedBranch] = useState(null);
+  const ownerId = sessionStorage.getItem("owner_id");
+  const branchId = sessionStorage.getItem("branch_id");
 
   const handleDashBoard = () => {
     navigate("/overview");
@@ -26,6 +38,35 @@ const SideBar = ({ menuTab }) => {
   const handleNotificationSummary = () => {
     navigate("/notification-summary");
   };
+
+  console.log("branch ID", branchId);
+
+  useEffect(() => {
+    const fetchBranches = async () => {
+      try {
+        const response = await fetchApi(`${URL}/branches/owner/${ownerId}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch branches");
+        }
+        const data = await response.json();
+        setBranches(data);
+
+        const matchedBranch = data.find(
+          (branch) => branch.branch_id === Number(branchId)
+        );
+
+        if (matchedBranch) {
+          setSelectedBranch(matchedBranch);
+        } else {
+          console.log("No matching branch found.");
+        }
+      } catch (error) {
+        console.error("Error fetching branch data:", error);
+      }
+    };
+
+    fetchBranches();
+  }, [URL, branchId, ownerId]);
 
   return (
     <div>
@@ -63,7 +104,13 @@ const SideBar = ({ menuTab }) => {
               />
             </svg>
             <span class="self-center text-2xl font-semibold whitespace-nowrap text-white">
-              สุขเสมอคาเฟ่
+              {selectedBranch ? (
+                <p>
+                  {selectedBranch.branch_name} {selectedBranch.branch_address}
+                </p>
+              ) : (
+                <p>สุขเสมอคาเฟ่</p>
+              )}
             </span>
           </a>
 
