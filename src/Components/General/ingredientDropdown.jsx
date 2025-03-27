@@ -127,6 +127,7 @@ const IngredientDropdown = ({ value, onChange }) => {
       padding: "6px",
       color: "#4B5563",
       fontSize: "16px",
+      background: "#F5F5F5",
     }),
   };
 

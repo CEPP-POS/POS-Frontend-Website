@@ -8,10 +8,14 @@ import { useSelector } from "react-redux";
 import { useEffect } from "react";
 import ThaiVirtualKeyboardInput from "../../../../Components/Common/ThaiVirtualKeyboardInput";
 import LoadingPopup from "../../../../Components/General/loadingPopup";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 const ChoiceList = () => {
   const environment = process.env.NODE_ENV || "development";
   const URL = configureAPI[environment].URL;
+
+  const MySwal = withReactContent(Swal);
 
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
@@ -169,6 +173,12 @@ const ChoiceList = () => {
         await fetchGroupsData();
         setIsDeletePopupOpen(false);
         setProductToDelete(null);
+        MySwal.fire({
+          icon: "success",
+          title: "ลบข้อมูลตัวเลือกสำเร็จ",
+          timer: 2000,
+          showConfirmButton: false,
+        });
       } else {
         const errorData = await response.json();
         console.error("Error deleting option:", errorData);

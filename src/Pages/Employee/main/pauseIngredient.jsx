@@ -10,10 +10,13 @@ import {
 } from "../../../Components/General/statusPopup";
 import LoadingPopup from "../../../Components/General/loadingPopup";
 import { useWebSocket } from "../../../webSocketContext";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 const PauseIngredient = () => {
   const environment = process.env.NODE_ENV || "development";
   const URL = configureAPI[environment].URL;
+  const MySwal = withReactContent(Swal);
 
   const navigate = useNavigate();
   const socket = useWebSocket();
@@ -114,6 +117,12 @@ const PauseIngredient = () => {
       setSelectedIngredientItems([]);
       setSuccessMessage("บันทึกข้อมูลเสร็จสิ้น");
       setFailMessage("");
+      MySwal.fire({
+        icon: "success",
+        title: "พักวัตถุดิบสำเร็จ",
+        timer: 2000,
+        showConfirmButton: false,
+      });
       setShowLoading(false);
       navigate("/pause-section");
       if (socket) {

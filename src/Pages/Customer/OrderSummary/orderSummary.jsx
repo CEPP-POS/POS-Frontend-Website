@@ -116,7 +116,7 @@ const Summary = () => {
   };
 
   return (
-    <div className="w-full font-noto flex flex-col items-center bg-[#F5F5F5] h-screen-navbar">
+    <div className="w-full font-noto flex flex-col items-center bg-white h-screen-navbar">
       <div className="w-full flex justify-start items-center mb-6">
         <button onClick={handleBack} className="text-[#DD9F52] text-4xl">
           <IoChevronBack className="w-[40px] h-[40px] text-[#DD9F52]" />
@@ -131,7 +131,7 @@ const Summary = () => {
       <div className="w-full rounded-lg overflow-hidden">
         <div className="max-h-[400px] overflow-y-auto">
           <table className="w-full border-collapse">
-            <thead className="bg-gray-100 sticky top-0">
+            <thead className="bg-white sticky top-0">
               <tr className="border-b border-gray-300 text-2xl">
                 <th className="text-left py-2 px-4">เมนู</th>
                 <th className="text-center py-2 px-4">จำนวน</th>
@@ -220,7 +220,7 @@ const Summary = () => {
       </div>
 
       {/* Order summary */}
-      <div className="w-full fixed bottom-32 border-t border-gray-300 pt-4 text-2xl px-12 bg-[#F5F5F5]">
+      <div className="w-full fixed bottom-32 border-t border-gray-300 pt-4 text-2xl px-12 bg-white">
         {/* <div className="flex justify-between mb-2 font-bold">
           <span>รวมเป็นเงิน</span>
           <span>{subtotal} บาท</span>
@@ -245,7 +245,7 @@ const Summary = () => {
       {/* Payment popup */}
       {showPaymentPopup && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-[#F5F5F5] rounded-lg p-10 w-[800px] relative">
+          <div className="bg-white rounded-lg p-10 w-[800px] relative">
             <h2 className="text-3xl font-bold mb-4 flex justify-center">
               วิธีการชำระเงิน
             </h2>

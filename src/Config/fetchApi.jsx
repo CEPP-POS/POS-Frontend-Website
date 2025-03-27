@@ -18,14 +18,16 @@ const fetchApi = async (url, method, body) => {
     headers["Authorization"] = `Bearer ${token}`;
   }
   if (ownerId) {
-    headers["owner_id"] = parseInt(ownerId);
+    headers["owner_id"] = ownerId;
   }
   if (branchId) {
-    headers["branch_id"] = parseInt(branchId);
+    headers["branch_id"] = branchId;
   }
   if (role) {
     headers["role"] = role;
   }
+
+  console.log("HEADER:", headers);
 
   console.log("ROLE:", role);
 

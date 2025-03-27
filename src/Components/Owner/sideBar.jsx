@@ -52,7 +52,7 @@ const SideBar = ({ menuTab }) => {
         setBranches(data);
 
         const matchedBranch = data.find(
-          (branch) => branch.branch_id === Number(branchId)
+          (branch) => branch.branch_id === branchId
         );
 
         if (matchedBranch) {
@@ -109,7 +109,7 @@ const SideBar = ({ menuTab }) => {
                   {selectedBranch.branch_name} {selectedBranch.branch_address}
                 </p>
               ) : (
-                <p>สุขเสมอคาเฟ่</p>
+                <p></p>
               )}
             </span>
           </a>

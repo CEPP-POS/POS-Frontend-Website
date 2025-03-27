@@ -5,6 +5,7 @@ import IncomeOrderCancel from "../../../../Components/Owner/incomeOrderCancel";
 import LineChart from "../../../../Components/Owner/lineChart";
 import fetchApi from "../../../../Config/fetchApi";
 import configureAPI from "../../../../Config/configureAPI";
+import LoadingPopup from "../../../../Components/General/loadingPopup";
 
 const SaleSummaryGraph = () => {
   const environment = process.env.NODE_ENV || "development";
@@ -60,7 +61,7 @@ const SaleSummaryGraph = () => {
         <span className="flex justify-end">
           <CalendarSelect setSelectedDate={setSelectedDate} />
         </span>
-        {loading ? <div>Loading...</div> : <IncomeOrderCancel data={data} />}
+        <IncomeOrderCancel data={data} />
         <div className="mt-3 flex-1">
           {/* Line Chart Section */}
           <div className="bg-[#F5F5F5] p-4 border rounded-lg flex flex-col">
@@ -73,6 +74,7 @@ const SaleSummaryGraph = () => {
           </div>
         </div>
       </div>
+      {loading ? <LoadingPopup /> : null}
     </div>
   );
 };

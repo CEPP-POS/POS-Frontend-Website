@@ -176,7 +176,7 @@ const MenuDetail = () => {
   if (!menu) return <div>Loading...</div>;
 
   return (
-    <div className="font-noto flex flex-col bg-[#F5F5F5] mb-8 h-screen-navbar">
+    <div className="font-noto flex flex-col bg-white mb-8 h-screen-navbar">
       <div className="flex justify-between items-center mb-6 relative">
         <button onClick={handleBack}>
           <IoChevronBack className="w-[40px] h-[40px] text-[#DD9F52]" />
@@ -294,7 +294,7 @@ const MenuDetail = () => {
         )}
       </div>
 
-      <div className="mt-4 flex flex-col items-center space-y-4">
+      <div className="mt-4 flex flex-col items-center space-y-4  pb-8">
         <div className="w-full flex flex-row items-center justify-between">
           <span className="font-bold">จำนวน</span>
           <div className="flex items-center space-x-4">

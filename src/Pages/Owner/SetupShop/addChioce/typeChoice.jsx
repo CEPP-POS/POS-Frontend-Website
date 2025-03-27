@@ -9,10 +9,14 @@ import { AiOutlineDelete } from "react-icons/ai";
 import { useLocation } from "react-router-dom";
 import ThaiVirtualKeyboardInput from "../../../../Components/Common/ThaiVirtualKeyboardInput";
 import LoadingPopup from "../../../../Components/General/loadingPopup";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 const TypeChoice = () => {
   const environment = process.env.NODE_ENV || "development";
   const URL = configureAPI[environment].URL;
+
+  const MySwal = withReactContent(Swal);
 
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
@@ -164,7 +168,7 @@ const TypeChoice = () => {
               old_menu_type_group_name: oldGroupName,
               new_menu_type_group_name: groupName,
               options: choices.map((choice) => ({
-                menu_type_id: choice.id?.toString() || "null",
+                menu_type_id: choice.id?.toString() || null,
                 type_name: choice.name,
                 price_difference: choice.price,
               })),
@@ -191,6 +195,12 @@ const TypeChoice = () => {
 
           if (response.ok) {
             navigate("/choice-list");
+            MySwal.fire({
+              icon: "success",
+              title: "เพิ่ม/จัดการข้อมูลชนิดเครื่องดื่มสำเร็จ",
+              timer: 2000,
+              showConfirmButton: false,
+            });
           } else {
             const errorData = await response.json();
             console.error("Error response:", errorData);

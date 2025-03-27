@@ -9,12 +9,15 @@ import ThaiVirtualKeyboardInput from "../../../../Components/Common/ThaiVirtualK
 import LoadingPopup from "../../../../Components/General/loadingPopup";
 import { AiOutlineCheckCircle } from "react-icons/ai";
 import { IoIosArrowDown } from "react-icons/io";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 const EditOwnerProduct = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const environment = process.env.NODE_ENV || "development";
   const URL = configureAPI[environment].URL;
+  const MySwal = withReactContent(Swal);
 
   const [productData, setProductData] = useState(null);
   const [productName, setProductName] = useState();
@@ -189,6 +192,12 @@ const EditOwnerProduct = () => {
 
       if (response.ok) {
         setIsModalOpen(true);
+        MySwal.fire({
+          icon: "success",
+          title: "แก้ไขข้อมูลวัตถุดิบสำเร็จ",
+          timer: 2000,
+          showConfirmButton: false,
+        });
       } else {
         console.error("Failed to update ingredient");
       }
@@ -196,6 +205,7 @@ const EditOwnerProduct = () => {
       console.error("Error updating ingredient:", error);
     } finally {
       setLoading(false);
+      navigate("/stock");
     }
   };
 
@@ -344,7 +354,7 @@ const EditOwnerProduct = () => {
         </div>
 
         {/* Modal */}
-        {isModalOpen && (
+        {/* {isModalOpen && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-[#F5F5F5] rounded-lg p-6 w-[400px] text-center">
               <AiOutlineCheckCircle
@@ -360,7 +370,7 @@ const EditOwnerProduct = () => {
               </button>
             </div>
           </div>
-        )}
+        )} */}
         {/* Save and Back buttons */}
         <div className="flex fixed bottom-0 left-0 px-4 py-4 pb-4 w-full space-x-8 justify-between bg-[#F5F5F5]">
           <button
