@@ -52,7 +52,7 @@ const SideBar = ({ menuTab }) => {
         setBranches(data);
 
         const matchedBranch = data.find(
-          (branch) => branch.branch_id === Number(branchId)
+          (branch) => branch.branch_id === branchId
         );
 
         if (matchedBranch) {
