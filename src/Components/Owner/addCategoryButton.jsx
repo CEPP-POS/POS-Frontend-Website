@@ -43,7 +43,7 @@ const AddCategoryButton = ({ onAdd }) => {
     <div>
       <button
         type="button"
-        className="text-[#DD9F52] bg-[#F5F5F5] border border-[#DD9F52] focus:outline-none hover:bg-[#DD9F52] hover:text-white focus:ring-4 focus:ring-gray-100 font-medium rounded-full text-xl px-3 py-1"
+        className="text-[#DD9F52] bg-[#F5F5F5] border border-[#DD9F52] focus:outline-none hover:bg-[#DD9F52] hover:text-white focus:ring-4 focus:ring-gray-100 font-bold rounded-full text-xl px-3 py-1"
         onClick={toggleModal}
       >
         <div className="flex items-center">
@@ -81,7 +81,7 @@ const AddCategoryButton = ({ onAdd }) => {
                 placeholder="กรอกชื่อหมวดหมู่..."
                 value={categoryName}
                 onChange={(value) => setCategoryName(value)}
-                className="w-full border border-[#DD9F52] rounded-full p-2 focus:outline-none focus:ring-1 focus:ring-[#DD9F52]"
+                className="w-full bg-[#F5F5F5] border border-[#DD9F52] rounded-full p-2 focus:outline-none focus:ring-1 focus:ring-[#DD9F52]"
               />
             </div>
 

@@ -43,16 +43,16 @@ const DeleteProduct = ({ isOpen, onClose, onConfirm, product }) => {
         <p className="text-gray-600 mb-8">
           การลบเมนูจะไม่สามารถย้อนกลับมาแก้ไขได้อีก
         </p>
-        <div className="w-full flex justify-between space-x-8 ">
+        <div className="w-full flex justify-between space-x-8">
           <button
             onClick={onClose}
-            className="px-8 py-3 w-[250px] border rounded-full text-[#DD9F52] border-[#DD9F52] hover:bg-[#f5e9dc] transition-colors"
+            className="px-8 py-3 w-[250px] font-bold border rounded-full text-[#DD9F52] border-[#DD9F52] hover:bg-[#f5e9dc] transition-colors"
           >
             ยกเลิก
           </button>
           <button
             onClick={handleDelete}
-            className="px-8 py-3 w-[250px] bg-[#DD9F52] text-white rounded-full hover:bg-[#C68A47] transition-colors"
+            className="px-8 py-3 w-[250px] bg-[#DD9F52] text-white rounded-full hover:bg-[#C68A47] transition-colors font-bold"
           >
             ลบ
           </button>

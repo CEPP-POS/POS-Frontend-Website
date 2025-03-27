@@ -80,7 +80,7 @@ const CalendarSelect = ({ setSelectedDate }) => {
           >
             <div className="mb-4">
               <div className="flex justify-between items-center border-b border-[#DD9F52] pb-2 mb-4">
-                <h2 className="text-lg font-semibold text-black">
+                <h2 className="text-xl font-semibold text-black">
                   เลือกวันที่
                 </h2>
                 <button
@@ -110,7 +110,7 @@ const CalendarSelect = ({ setSelectedDate }) => {
                 >
                   {years.map((year) => (
                     <option key={year} value={year}>
-                      {year}
+                      {year + 543}
                     </option>
                   ))}
                 </select>

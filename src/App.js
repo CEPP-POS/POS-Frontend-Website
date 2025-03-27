@@ -48,6 +48,7 @@ import Branch from "./Pages/Owner/SetupShop/branch";
 import WebSocket from "ws";
 import { WebSocketProvider } from "./webSocketContext";
 import EditOwnerProduct from "./Pages/Owner/SaleSummary/Stock/editOwnerProduct";
+import SyncBranch from "./Pages/Owner/SetupShop/syncBranch";
 
 function App() {
   return (
@@ -68,7 +69,7 @@ function App() {
             <Route path="/order-summary" element={<OrderSummary />} />
             <Route path="/sale-summary-graph" element={<SaleSummaryGraph />} />
             <Route path="/stock" element={<Stock />} />
-            
+
             <Route path="/add-owner-product" element={<AddOwnerProduct />} />
             <Route path="/product-detail" element={<ProductDetail />} />
             <Route
@@ -96,6 +97,8 @@ function App() {
 
             {/* Routes with Navbar : other flow*/}
             <Route element={<NavbarLayout />}>
+              <Route path="/sync-branch" element={<SyncBranch />} />
+
               <Route path="/main-menu" element={<MainMenu />} />
               <Route path="/role" element={<UserRole />} />
               <Route path="/owner" element={<OwnerMenu />} />

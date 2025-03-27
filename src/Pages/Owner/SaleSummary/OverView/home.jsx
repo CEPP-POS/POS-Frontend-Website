@@ -52,7 +52,7 @@ const Home = () => {
     <div className="h-screen-website bg-[#F5F5F5]">
       <SideBar menuTab={"overview"} />
       <div className="ml-8 mr-8">
-        <h1 className="font-bold text-xl">ภาพรวมการขาย</h1>
+        <h1 className="font-bold text-3xl">ภาพรวมการขาย</h1>
         <span className="flex justify-end">
           <CalendarSelect setSelectedDate={setSelectedDate} />
         </span>

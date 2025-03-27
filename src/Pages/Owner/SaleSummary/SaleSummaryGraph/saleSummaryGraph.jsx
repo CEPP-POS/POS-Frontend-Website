@@ -56,7 +56,7 @@ const SaleSummaryGraph = () => {
     <div className="h-screen-website flex flex-col">
       <SideBar menuTab={"saleSummaryGraph"} />
       <div className="ml-8 mr-8">
-        <h1 className="font-bold text-xl">ภาพรวมยอดขาย</h1>
+        <h1 className="font-bold text-3xl">ภาพรวมยอดขายรายเดือน</h1>
         <span className="flex justify-end">
           <CalendarSelect setSelectedDate={setSelectedDate} />
         </span>
