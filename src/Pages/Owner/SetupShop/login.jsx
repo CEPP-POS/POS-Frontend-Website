@@ -50,6 +50,7 @@ const Login = () => {
 
         sessionStorage.setItem("token", userData.token);
         sessionStorage.setItem("owner_id", decodedToken.owner_id);
+        sessionStorage.setItem("email", decodedToken.email);
         // sessionStorage.setItem("branch_id", decodedToken.branch_id);
         sessionStorage.setItem("role", decodedToken.roles[0]);
 

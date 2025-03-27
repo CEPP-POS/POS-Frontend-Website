@@ -3,22 +3,30 @@ import { useNavigate } from "react-router-dom";
 import { RiHomeOfficeLine } from "react-icons/ri";
 import fetchApi from "../../../Config/fetchApi";
 import configureAPI from "../../../Config/configureAPI";
+import LoadingPopup from "../../../Components/General/loadingPopup";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 const SyncBranch = () => {
   const environment = process.env.NODE_ENV || "development";
   const URL = configureAPI[environment].URL;
+  const MAIN_SERVER = configureAPI[environment].MAIN_SERVER;
 
   const navigate = useNavigate();
   const [branches, setBranches] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedBranch, setSelectedBranch] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const ownerId = sessionStorage.getItem("owner_id");
+  const MySwal = withReactContent(Swal);
 
   useEffect(() => {
     const fetchBranches = async () => {
       try {
-        const response = await fetchApi(`${URL}/branches/owner/${ownerId}`);
+        const response = await fetchApi(
+          `${MAIN_SERVER}/branches/owner/${ownerId}`
+        );
         if (!response.ok) {
           throw new Error("Failed to fetch branches");
         }
@@ -41,9 +49,40 @@ const SyncBranch = () => {
     setIsModalOpen(true);
   };
 
-  const handleConfirmSync = () => {
+  const handleConfirmSync = async () => {
     console.log("Syncing branch:", selectedBranch);
     // logic sync
+
+    setLoading(true);
+    try {
+      const response = await fetchApi(
+        `${URL}/branches/owner/clone-branch-setup/${selectedBranch.branch_id}`,
+        "POST"
+      );
+
+      if (response.ok) {
+        MySwal.fire({
+          icon: "success",
+          title: "ซิงค์ข้อมูลสาขาสำเร็จ",
+          timer: 2000,
+          showConfirmButton: false,
+        }).then(() => {
+          navigate("/role");
+        });
+      } else {
+        MySwal.fire({
+          icon: "error",
+          title: "ซิงค์ข้อมูลสาขาไม่สำเร็จ",
+          text: "โปรดลองอีกครั้ง",
+          timer: 5000,
+          showConfirmButton: false,
+        });
+      }
+    } catch (error) {
+      console.error("Error logging in:", error);
+    } finally {
+      setLoading(false);
+    }
 
     setIsModalOpen(false);
   };
@@ -123,6 +162,8 @@ const SyncBranch = () => {
           </div>
         </div>
       )}
+
+      <LoadingPopup loading={loading} />
     </div>
   );
 };
