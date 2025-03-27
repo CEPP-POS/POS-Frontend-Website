@@ -148,6 +148,7 @@ const ChoiceList = () => {
         break;
       case "ความหวาน":
         endpoint = `${URL}/owner/menus/options/sweetness/${productToDelete.name}`;
+        console.log("DELETE GROUP:", productToDelete.name);
         break;
       case "ท็อปปิ้ง":
         endpoint = `${URL}/owner/menus/options/add-ons`;
@@ -281,7 +282,9 @@ const ChoiceList = () => {
               renderSection(type, items)
             )
           ) : (
-            <p className="text-gray-500 text-center">ไม่มีกลุ่มรายการสินค้า</p>
+            <p className="text-gray-500 text-center">
+              ไม่มีตัวเลือกรายการสินค้า
+            </p>
           )}
         </div>
 

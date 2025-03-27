@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaSearch } from "react-icons/fa";
-import HomeEmButton from "../../../Components/Employee/homeEmButton";
 import fetchApi from "../../../Config/fetchApi";
 import configureAPI from "../../../Config/configureAPI";
 import ThaiVirtualKeyboardInput from "../../../Components/Common/ThaiVirtualKeyboardInput";
@@ -189,7 +188,7 @@ const PauseIngredient = () => {
             วัตถุดิบทั้งหมด
           </label>
           <button
-            className={`px-4 py-2 rounded-full ${
+            className={`px-4 py-2 rounded-full text-xl ${
               filter === "ทั้งหมด"
                 ? "bg-[#DD9F52] text-white"
                 : "border border-[#DD9F52] text-[#DD9F52]"
@@ -199,7 +198,7 @@ const PauseIngredient = () => {
             ทั้งหมด
           </button>
           <button
-            className={`px-4 py-2 rounded-full ${
+            className={`px-4 py-2 rounded-full text-xl ${
               filter === "วัตถุดิบที่ไม่พัก"
                 ? "bg-[#DD9F52] text-white"
                 : "border border-[#DD9F52] text-[#DD9F52]"
@@ -209,7 +208,7 @@ const PauseIngredient = () => {
             วัตถุดิบที่ไม่พัก
           </button>
           <button
-            className={`px-4 py-2 rounded-full ${
+            className={`px-4 py-2 rounded-full text-xl ${
               filter === "วัตถุดิบที่พัก"
                 ? "bg-[#DD9F52] text-white"
                 : "border border-[#DD9F52] text-[#DD9F52]"
@@ -224,7 +223,7 @@ const PauseIngredient = () => {
       <div className="w-full ml-2">
         <div className="grid grid-cols-3 gap-4 mt-4">
           {filteredIngredientItems.map((ingredient, index) => (
-            <label key={index} className="flex items-center space-x-2">
+            <label key={index} className="flex items-center space-x-2 text-xl">
               <input
                 type="checkbox"
                 checked={

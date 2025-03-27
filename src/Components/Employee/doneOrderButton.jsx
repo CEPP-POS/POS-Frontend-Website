@@ -94,21 +94,21 @@ const DoneOrderButton = ({ order, onSuccess }) => {
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center z-50">
           <div className="bg-[#F5F5F5] w-[500px] h-auto rounded-lg p-6 shadow-lg">
-            <h2 className="text-xl font-bold text-center mb-4">
+            <h2 className="text-2xl font-bold text-center mb-4">
               ออเดอร์เสร็จสิ้นครบทุกรายการ ใช่หรือไม่
             </h2>
             <p className="text-gray-700 text-center mb-6">
               การกดเสร็จสิ้นออเดอร์จะไม่สามารถย้อนกลับมาแก้ไขได้อีก
             </p>
-            <div className="flex justify-between space-x-4 mt-12">
+            <div className="flex justify-between space-x-4 mt-8">
               <button
-                className="w-full text-[#DD9F52] border border-[#DD9F52]   hover:bg-[#afafaf] hover:text-white font-bold py-2 px-4 rounded-full"
+                className="w-[200px] text-[#DD9F52] border border-[#DD9F52] font-bold py-2 px-4 rounded-full"
                 onClick={closeModal}
               >
                 ยกเลิก
               </button>
               <button
-                className="w-full bg-[#DD9F52] hover:bg-[#C68A47] text-white font-bold py-2 px-4 rounded-full"
+                className="w-[200px] bg-[#DD9F52] hover:bg-[#C68A47] text-white font-bold py-2 px-4 rounded-full"
                 onClick={completeOrder}
               >
                 เสร็จสิ้นออเดอร์

@@ -14,9 +14,6 @@ const GlassChoice = () => {
   const environment = process.env.NODE_ENV || "development";
   const URL = configureAPI[environment].URL;
 
-  const userData = useSelector((state) => state.user.userData);
-  const { owner_id } = userData || {};
-
   const navigate = useNavigate();
   const groupedMenus = [];
   const [step, setStep] = useState(1);
@@ -78,7 +75,7 @@ const GlassChoice = () => {
           setOldGroupName(data.group_name);
 
           const existingChoices = data.sizes.map((size) => ({
-            size_id: size.size_id,
+            id: size.size_id,
             name: size.size_name,
             price: size.size_price,
           }));

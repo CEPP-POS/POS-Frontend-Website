@@ -2,12 +2,9 @@ const fetchApi = async (url, method, body) => {
   // Retrieve the values from sessionStorage
   const token = sessionStorage.getItem("token");
   const ownerId = sessionStorage.getItem("owner_id");
-  // const branchId = sessionStorage.getItem("branch_id");
 
-  // manual branch = 1 for now
-  // const branchId = sessionStorage.getItem("branch_id");
-  const branchId = 3;
-  const role = sessionStorage.getItem("roles");
+  const branchId = sessionStorage.getItem("branch_id");
+  const role = sessionStorage.getItem("role");
   const email = sessionStorage.getItem("email");
 
   // set data in header
@@ -30,7 +27,7 @@ const fetchApi = async (url, method, body) => {
     headers["role"] = role;
   }
 
-  console.log("HEADERS :", headers);
+  console.log("ROLE:", role);
 
   const options = {
     method: method,

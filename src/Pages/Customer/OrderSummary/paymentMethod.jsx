@@ -10,11 +10,14 @@ import configureAPI from "../../../Config/configureAPI";
 import { useWebSocket } from "../../../webSocketContext";
 import PhoneDetect from "../../../Components/PhoneDetect/phoneDetect";
 import LoadingPopup from "../../../Components/General/loadingPopup";
+import { clearCart } from "../../../Config/redux/cartSlice";
+import { useDispatch } from "react-redux";
 
 const PaymentMethod = () => {
   const environment = process.env.NODE_ENV || "development";
   const URL = configureAPI[environment].URL;
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const location = useLocation();
   const [loading, setLoading] = useState(false);
 
@@ -84,6 +87,7 @@ const PaymentMethod = () => {
 
             case "CANCEL_SLIP":
               createOrderDto.cancel_status = "ยกเลิกโดยพนักงาน";
+              createOrderDto.status = "canceled";
               break;
 
             default:
@@ -116,6 +120,7 @@ const PaymentMethod = () => {
               payload
             );
 
+            console.log("POST ORDER TO CREATE:", payload);
             console.log("Got response:", response);
 
             if (!response.ok) {
@@ -125,11 +130,16 @@ const PaymentMethod = () => {
             }
 
             const responseData = await response.json();
-            // console.log("Order submitted successfully:", responseData);
             socket.send(JSON.stringify({ type: "ORDER_SUBMITTED" })); //send to fetch order
-            navigate("/queue-summary", {
-              state: { orderData: responseData },
-            });
+            if (messageData.type === "CONFIRM_SLIP") {
+              navigate("/queue-summary", {
+                state: { orderData: responseData },
+              });
+            }
+            if (messageData.type === "CANCEL_SLIP") {
+              navigate("/menu");
+              dispatch(clearCart());
+            }
           } catch (error) {
             console.error("Error during order submission:", error);
           }
@@ -234,6 +244,10 @@ const PaymentMethod = () => {
 
           if (messageData.type === "CONFIRM_CASH_PAYMENT") {
             navigate("/queue-summary");
+          }
+          if (messageData.type === "CASH_PAYMENT_CANCELLED") {
+            navigate("/menu");
+            dispatch(clearCart());
           }
         } catch (error) {
           console.error("Error in WebSocket message handler:", error);

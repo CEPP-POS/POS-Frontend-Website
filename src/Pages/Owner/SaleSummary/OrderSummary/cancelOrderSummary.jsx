@@ -6,6 +6,7 @@ import PaymentMethodFilter from "../../../../Components/Owner/paymentMethodFilte
 import fetchApi from "../../../../Config/fetchApi";
 import configureAPI from "../../../../Config/configureAPI";
 import { useNavigate } from "react-router-dom";
+import { IoMdClose } from "react-icons/io";
 
 const CancelOrderSummary = () => {
   const navigate = useNavigate();
@@ -148,11 +149,11 @@ const CancelOrderSummary = () => {
   return (
     <div className="h-screen-website bg-[#F5F5F5]">
       <SideBar menuTab={"orderSummary"} />
-      <div className="px-10">
+      <div className="px-10 bg-[#F5F5F5] mb-40">
         <h1 className="font-bold text-3xl mt-[40px]">ออเดอร์ทั้งหมด</h1>
         <div className="flex justify-between items-center">
           <span className="flex items-center">
-            <span className="font-bold mt-4">ออเดอร์ที่ถูกยกเลิก</span>
+            <span className="font-bold text-xl mt-4">ออเดอร์ที่ถูกยกเลิก</span>
           </span>
         </div>
 
@@ -161,7 +162,7 @@ const CancelOrderSummary = () => {
         />
 
         {/* Table Section */}
-        <div className="overflow-x-auto border rounded-lg p-5">
+        <div className="overflow-x-auto border rounded-lg p-5 pb-24">
           <table className="border-collapse table-auto w-full">
             <thead>
               <tr>
@@ -173,7 +174,7 @@ const CancelOrderSummary = () => {
                 </th>
                 <th className="px-1 py-2 border-b border-[#000000]">จำนวน</th>
                 <th className="pl-10 py-2 border-b border-[#000000]">
-                  ราคาสุทธิ
+                  ราคาทั้งหมด
                 </th>
                 <th className="pr-5 py-2 text-center border-b border-[#000000]">
                   ช่องทางการชำระเงิน
@@ -197,7 +198,7 @@ const CancelOrderSummary = () => {
                     {item.quantity}
                   </td>
                   <td className="py-2 pl-10 text-center border-b border-[#F1F4F7]">
-                    {item.total_amount}
+                    {item.amount} บาท
                   </td>
                   <td className="py-3 flex justify-center text-center border-b border-[#F1F4F7]">
                     <div className="border-x px-2 border border-[#70AB8E] text-[#70AB8E] rounded-full">
@@ -212,13 +213,21 @@ const CancelOrderSummary = () => {
 
         {/* Order Detail Modal */}
         {selectedOrderData && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-10">
             <div className="bg-[#F5F5F5] p-10 rounded-lg shadow-lg w-[1024px] overflow-y-auto">
+              <div className="flex justify-end items-center">
+                <button
+                  className="text-gray-500 hover:text-[#DD9F52] "
+                  onClick={closeModal}
+                >
+                  <IoMdClose size={28} />
+                </button>
+              </div>
               <div className="flex justify-center">
-                <h2 className="text-3lg font-bold mb-4">ออเดอร์ที่ถูกยกเลิก</h2>
+                <h2 className="text-3xl font-bold mb-4">ออเดอร์ที่ถูกยกเลิก</h2>
               </div>
               <p>
-                <strong>หมายเลขออเดอร์: {selectedOrder}</strong>
+                <strong>หมายเลขออเดอร์ {selectedOrder}</strong>
               </p>
               {/* Table Section */}
               <div className="overflow-x-auto border rounded-lg p-2 mt-2">
@@ -258,7 +267,9 @@ const CancelOrderSummary = () => {
                           </td>
                           <td className="py-2 flex justify-center text-center border-b border-[#F1F4F7]">
                             <div className="border border-[#70AB8E] text-[#70AB8E] rounded-full w-24">
-                              {item.category_name}
+                              {item.category_name === "null"
+                                ? item.category_name
+                                : "ไม่มีกลุ่ม"}
                             </div>
                           </td>
                         </tr>
@@ -278,16 +289,32 @@ const CancelOrderSummary = () => {
               </div>
 
               <div className="grid grid-cols-4 gap-2 mt-6">
-                <p className="col-span-1">เวลาที่สั่งซื้อ </p>
-                <p className="col-span-3">{selectedOrderData.dateTime} </p>
-                <p className="col-span-1">ราคาสุทธิ </p>
+                <p className="col-span-1 font-bold">เวลาที่สั่งซื้อ </p>
+                <p className="col-span-3">
+                  {" "}
+                  {new Intl.DateTimeFormat("th-TH", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit",
+                    timeZone: "Asia/Bangkok",
+                  }).format(new Date(selectedOrderData.order_date))}{" "}
+                  น.
+                </p>
+                <p className="col-span-1 font-bold">ราคาทั้งหมด</p>
                 <p className="col-span-3">
                   {selectedOrderData.total_amount} บาท
                 </p>
-                <p className="col-span-1">ช่องทางการชำระเงิน </p>
-                <p className="col-span-3">{selectedOrderData.payment_method}</p>
+                <p className="col-span-1 font-bold">ช่องทางการชำระเงิน </p>
+                <p className="col-span-3">
+                  {selectedOrderData.payment_method === "cash"
+                    ? "เงินสด"
+                    : "QR Code"}
+                </p>
                 <div className="col-span-1 flex">
-                  <p>สถานะ </p>
+                  <p className="font-bold">สถานะ </p>
                   <div className="px-2">
                     <button
                       className="border border-[#DD9F52] text-[#DD9F52] rounded-full px-2 hover:bg-[#DD9F52] hover:text-white"
@@ -300,7 +327,7 @@ const CancelOrderSummary = () => {
                 <p className="col-span-3 border-x px-2 w-[160px] border border-[#70AB8E] text-[#70AB8E] rounded-full flex items-center justify-center">
                   {selectedOrderData.cancel_status}
                 </p>
-                <p className="col-span-1">ช่องทางการติดต่อลูกค้า </p>
+                <p className="col-span-1 font-bold">ช่องทางการติดต่อลูกค้า </p>
                 <p className="col-span-3">
                   <td>
                     {selectedOrderData.customer_contact
@@ -308,14 +335,6 @@ const CancelOrderSummary = () => {
                       : "-"}
                   </td>
                 </p>
-              </div>
-              <div className="flex justify-center mt-3">
-                <button
-                  className="px-14 py-4 w-[300px] border rounded-full text-[#DD9F52] border-[#DD9F52] hover:bg-[#f5e9dc] transition-colors font-bold"
-                  onClick={closeModal}
-                >
-                  ย้อนกลับ
-                </button>
               </div>
             </div>
           </div>

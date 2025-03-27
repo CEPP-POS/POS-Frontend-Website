@@ -169,8 +169,8 @@ const AddOwnerProduct = () => {
     <div className="h-screen-website bg-[#F5F5F5]">
       <SideBar menuTab={"stock"} />
       <div className="ml-8 mr-8">
-        <h1 className="font-bold text-xl">คลังสินค้า</h1>
-        <h1 className="font-bold">เพิ่มรายการสินค้าใหม่</h1>
+        <h1 className="font-bold text-3xl">คลังสินค้า</h1>
+        <h1 className="font-bold test-xl">เพิ่มรายการสินค้าใหม่</h1>
         <div className="px-10">
           {/* upload รูปภาพสินค้า */}
           <div className="py-2">

@@ -5,7 +5,7 @@ import fetchApi from "../../Config/fetchApi";
 import { useState } from "react";
 import LoadingPopup from "../General/loadingPopup";
 
-const CheckSlip = ({ imageUrl, onConfirm, total }) => {
+const CheckSlip = ({ imageUrl, onConfirm, total,onClose  }) => {
   const environment = process.env.NODE_ENV || "development";
   const URL = configureAPI[environment].URL;
   const socket = useWebSocket();
@@ -88,6 +88,8 @@ const CheckSlip = ({ imageUrl, onConfirm, total }) => {
         const message = { type: "CANCEL_SLIP", data: uploadData.filePath };
         socket.send(JSON.stringify(message));
       }
+
+      onClose();
     } catch (error) {
       console.error("Error handling slip confirmation:", error);
     } finally {
@@ -130,12 +132,12 @@ const CheckSlip = ({ imageUrl, onConfirm, total }) => {
         )}
 
         <div className="flex gap-2 mt-6">
-          {/* <button
-            className="w-full border border-gray-300 text-gray-600 hover:bg-gray-100 transition-all duration-300 py-2 rounded-full"
+          <button
+            className="w-full border border-gray-300 text-gray-600 hover:bg-gray-100 transition-all duration-300 py-2 rounded-full font-bold"
             onClick={handleCancel}
           >
             ยกเลิก
-          </button> */}
+          </button>
           <button
             className="w-full border border-[#DD9F52] text-[#DD9F52] bg-transparent hover:bg-[#DD9F52] hover:text-white font-bold py-2 rounded-full transition-all"
             onClick={handleRetake}

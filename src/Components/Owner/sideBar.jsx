@@ -6,9 +6,22 @@ import { TbLogout } from "react-icons/tb";
 import { PiShoppingCart } from "react-icons/pi";
 import { GoGraph } from "react-icons/go";
 import { BsBox2 } from "react-icons/bs";
+import configureAPI from "../../Config/configureAPI";
+import LogoutButton from "../General/logoutButton";
+import { useEffect } from "react";
+import fetchApi from "../../Config/fetchApi";
+import { useState } from "react";
 
 const SideBar = ({ menuTab }) => {
   const navigate = useNavigate();
+
+  const [branches, setBranches] = useState([]);
+  const environment = process.env.NODE_ENV || "development";
+  const URL = configureAPI[environment].URL;
+
+  const [selectedBranch, setSelectedBranch] = useState(null);
+  const ownerId = sessionStorage.getItem("owner_id");
+  const branchId = sessionStorage.getItem("branch_id");
 
   const handleDashBoard = () => {
     navigate("/overview");
@@ -25,6 +38,35 @@ const SideBar = ({ menuTab }) => {
   const handleNotificationSummary = () => {
     navigate("/notification-summary");
   };
+
+  console.log("branch ID", branchId);
+
+  useEffect(() => {
+    const fetchBranches = async () => {
+      try {
+        const response = await fetchApi(`${URL}/branches/owner/${ownerId}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch branches");
+        }
+        const data = await response.json();
+        setBranches(data);
+
+        const matchedBranch = data.find(
+          (branch) => branch.branch_id === Number(branchId)
+        );
+
+        if (matchedBranch) {
+          setSelectedBranch(matchedBranch);
+        } else {
+          console.log("No matching branch found.");
+        }
+      } catch (error) {
+        console.error("Error fetching branch data:", error);
+      }
+    };
+
+    fetchBranches();
+  }, [URL, branchId, ownerId]);
 
   return (
     <div>
@@ -62,18 +104,25 @@ const SideBar = ({ menuTab }) => {
               />
             </svg>
             <span class="self-center text-2xl font-semibold whitespace-nowrap text-white">
-              สุขเสมอคาเฟ่
+              {selectedBranch ? (
+                <p>
+                  {selectedBranch.branch_name} {selectedBranch.branch_address}
+                </p>
+              ) : (
+                <p>สุขเสมอคาเฟ่</p>
+              )}
             </span>
           </a>
 
           {/* menu list */}
-          <div className="flex items-center space-x-6 w-auto text-white mr-8">
+          <div className="flex items-center space-x-6 w-auto mr-8">
             {/* home */}
             <button
               onClick={() => navigate("/role")}
-              className="flex p-2 text-black hover:text-[#C68A47] transition-all duration-300"
+              className="flex p-2 text-black hover:text-[rgb(198,138,71)] transition-all duration-300"
             >
               <HiOutlineHome size={24} className="text-white" />
+              <span className="text-xl font-bold text-white">หน้าหลัก</span>
             </button>
 
             {/* dashboard */}
@@ -82,29 +131,37 @@ const SideBar = ({ menuTab }) => {
               className="flex p-2 text-white hover:text-[#C68A47] transition-all duration-300"
             >
               <div
-                className={`flex items-center p-2 text-gray-900 rounded-lg ${
-                  menuTab === "overview"
-                    ? "bg-[#C68A47]"
-                    : "hover:bg-transparent"
+                className={`flex items-center p-2 rounded-lg ${
+                  menuTab === "overview" ? "text-[#C68A47]" : "text-white"
                 }`}
               >
-                <TiThLargeOutline size={24} className="text-white" />
+                <TiThLargeOutline
+                  size={24}
+                  className={`${
+                    menuTab === "overview" ? "text-[#C68A47]" : "text-white"
+                  }`}
+                />
+                <span className="text-xl font-bold">ภาพรวมการขาย</span>
               </div>
             </button>
 
             {/* order */}
             <button
               onClick={handleOrderSummary}
-              className="flex p-2 text-white hover:text-[#C68A47] transition-all duration-300"
+              className="flex p-2 hover:text-[#C68A47] transition-all duration-300"
             >
               <div
-                className={`flex items-center p-2 text-gray-900 rounded-lg  ${
-                  menuTab === "orderSummary"
-                    ? "bg-[#C68A47]"
-                    : "hover:bg-transparent"
+                className={`flex items-center p-2 rounded-lg ${
+                  menuTab === "orderSummary" ? "text-[#C68A47]" : "text-white"
                 }`}
               >
-                <PiShoppingCart size={24} className="text-white" />
+                <PiShoppingCart
+                  size={24}
+                  className={`${
+                    menuTab === "orderSummary" ? "text-[#C68A47]" : "text-white"
+                  }`}
+                />
+                <span className="text-xl font-bold">ประวัติออเดอร์</span>
               </div>
             </button>
 
@@ -114,13 +171,21 @@ const SideBar = ({ menuTab }) => {
               className="flex p-2 text-white hover:text-[#C68A47] transition-all duration-300"
             >
               <div
-                className={`flex items-center p-2 text-gray-900 rounded-lg  ${
+                className={`flex items-center p-2 rounded-lg ${
                   menuTab === "saleSummaryGraph"
-                    ? "bg-[#C68A47]"
-                    : "hover:bg-transparent"
+                    ? "text-[#C68A47]"
+                    : "text-white"
                 }`}
               >
-                <GoGraph size={24} className="text-white" />
+                <GoGraph
+                  size={24}
+                  className={`${
+                    menuTab === "saleSummaryGraph"
+                      ? "text-[#C68A47]"
+                      : "text-white"
+                  }`}
+                />
+                <span className="text-xl font-bold">สรุปรายเดือน</span>
               </div>
             </button>
 
@@ -130,20 +195,23 @@ const SideBar = ({ menuTab }) => {
               className="flex p-2 text-white hover:text-[#C68A47] transition-all duration-300"
             >
               <div
-                className={`flex items-center p-2 text-gray-900 rounded-lg  ${
-                  menuTab === "stock" ? "bg-[#C68A47]" : "hover:bg-transparent"
+                className={`flex items-center p-2 rounded-lg ${
+                  menuTab === "stock" ? "text-[#C68A47]" : "text-white"
                 }`}
               >
-                <BsBox2 size={24} className="text-white" />
+                <BsBox2
+                  size={24}
+                  className={`${
+                    menuTab === "stock" ? "text-[#C68A47]" : "text-white"
+                  }`}
+                />
+                <span className="text-xl font-bold ml-1">คลังสินค้า</span>
               </div>
             </button>
 
             {/* log out */}
-            <button
-              onClick={() => navigate("/")}
-              className="flex p-2 text-black hover:text-red-600 transition-all duration-300"
-            >
-              <TbLogout size={24} className="text-white" />
+            <button className="flex p-2 text-black hover:text-red-600 transition-all duration-300">
+              <LogoutButton />
             </button>
           </div>
         </div>

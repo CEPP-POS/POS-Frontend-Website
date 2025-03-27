@@ -13,9 +13,7 @@ const MenuDetail = () => {
   const environment = process.env.NODE_ENV || "development";
   const URL = configureAPI[environment].URL;
 
-  const userData = useSelector((state) => state.user.userData);
   const cartItems = useSelector((state) => state.cart.items);
-  const { owner_id } = userData || {};
 
   const location = useLocation();
   const { menuId } = location.state || {};
@@ -94,6 +92,8 @@ const MenuDetail = () => {
       menuId: menuId,
       menuName: menu.menu_name,
       menu_img: menu.image_url,
+      menu_quantity: menu.quantity,
+      menu_price: menu.menu_price,
       selectedType: {
         id: menu.menu_type_group.find((type) => type.type_name === selectedType)
           ?.menu_type_id,
@@ -176,7 +176,7 @@ const MenuDetail = () => {
   if (!menu) return <div>Loading...</div>;
 
   return (
-    <div className="font-noto flex flex-col bg-[#F5F5F5] mb-8">
+    <div className="font-noto flex flex-col bg-[#F5F5F5] mb-8 h-screen-navbar">
       <div className="flex justify-between items-center mb-6 relative">
         <button onClick={handleBack}>
           <IoChevronBack className="w-[40px] h-[40px] text-[#DD9F52]" />
@@ -327,7 +327,7 @@ const MenuDetail = () => {
           onClick={handleAddToCart}
           className="w-full py-3 bg-[#DD9F52] text-white rounded-full font-semibold mb-8"
         >
-          + เพิ่มเข้าตระกร้า
+          + เพิ่มเข้าตะกร้า
         </button>
       </div>
     </div>

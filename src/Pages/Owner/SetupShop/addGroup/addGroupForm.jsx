@@ -14,7 +14,6 @@ const AddGroupForm = () => {
   const URL = configureAPI[environment].URL;
 
   const navigate = useNavigate();
-  const userData = useSelector((state) => state.user.userData);
   const location = useLocation();
   const { mode, groupData } = location.state || {
     mode: "add",
@@ -27,7 +26,6 @@ const AddGroupForm = () => {
   const [selectedMenus, setSelectedMenus] = useState([]);
   const [menuItems, setMenuItems] = useState([]);
   const [loading, setLoading] = useState(false);
-  const { owner_id } = userData || {};
   const [errors, setErrors] = useState("");
   const [selectedMenuErrors, setSelectedMenuErrors] = useState("");
 
@@ -52,7 +50,6 @@ const AddGroupForm = () => {
 
   console.log("selectedMenus:", selectedMenus);
   console.log("mode:", mode);
-  console.log("owner id:", owner_id);
 
   // fetch group data
   useEffect(() => {

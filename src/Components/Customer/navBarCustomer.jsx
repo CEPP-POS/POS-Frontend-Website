@@ -2,9 +2,49 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { HiOutlineHome } from "react-icons/hi";
 import { TbLogout } from "react-icons/tb";
+import configureAPI from "../../Config/configureAPI";
+import fetchApi from "../../Config/fetchApi";
+import { useEffect } from "react";
 
 const NavbarCustomer = () => {
   const navigate = useNavigate();
+
+  const environment = process.env.NODE_ENV || "development";
+  const URL = configureAPI[environment].URL;
+
+  const [branches, setBranches] = useState([]);
+  const [selectedBranch, setSelectedBranch] = useState(null);
+  const ownerId = sessionStorage.getItem("owner_id");
+  const branchId = sessionStorage.getItem("branch_id");
+
+  useEffect(() => {
+    const fetchBranches = async () => {
+      try {
+        const response = await fetchApi(`${URL}/branches/owner/${ownerId}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch branches");
+        }
+        const data = await response.json();
+        setBranches(data);
+
+        const matchedBranch = data.find(
+          (branch) => branch.branch_id === Number(branchId)
+        );
+
+        if (matchedBranch) {
+          setSelectedBranch(matchedBranch);
+        } else {
+          console.log("No matching branch found.");
+        }
+      } catch (error) {
+        console.error("Error fetching branch data:", error);
+      }
+    };
+
+    fetchBranches();
+  }, [URL, branchId, ownerId]);
+
+  console.log("SELECT BRANCH", selectedBranch);
 
   return (
     <nav className="border-b border-[#2C586E] mb-4 dark:bg-[#2C586E] shadow-md w-full">
@@ -34,7 +74,14 @@ const NavbarCustomer = () => {
             <rect x="6" y="27" width="47" height="3" rx="1.5" fill="#2F2105" />
           </svg>
           <span class="self-center text-3xl font-semibold whitespace-nowrap text-white">
-            สุขเสมอคาเฟ่
+            {" "}
+            {selectedBranch ? (
+              <p>
+                {selectedBranch.branch_name} {selectedBranch.branch_address}
+              </p>
+            ) : (
+              <p>สุขเสมอคาเฟ่</p>
+            )}
           </span>
         </a>
 

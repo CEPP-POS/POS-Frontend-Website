@@ -20,10 +20,9 @@ const Home = () => {
     day: "2-digit",
   };
   const formattedDate = today.toLocaleDateString("en-CA", options);
-  const [selectedDate, setSelectedDate] = useState(formattedDate); // Default date
-  const [data, setData] = useState(null); // State to hold fetched data
+  const [selectedDate, setSelectedDate] = useState(formattedDate);
+  const [data, setData] = useState(null);
 
-  // Function to fetch data based on the selected date
   console.log("SELECTED DATE", selectedDate);
 
   const fetchData = async (selectedDate) => {
@@ -44,18 +43,16 @@ const Home = () => {
     }
   };
 
-  console.log("DATA IN HOME", data);
-
-  // Fetch data when the component mounts or when the selected date changes
   useEffect(() => {
+    console.log("Fetching data for:", selectedDate);
     fetchData(selectedDate);
-  }, [selectedDate]); // Refetch data when selectedDate changes
+  }, [selectedDate]);
 
   return (
     <div className="h-screen-website bg-[#F5F5F5]">
       <SideBar menuTab={"overview"} />
       <div className="ml-8 mr-8">
-        <h1 className="font-bold text-xl">ภาพรวมการขาย</h1>
+        <h1 className="font-bold text-3xl">ภาพรวมการขาย</h1>
         <span className="flex justify-end">
           <CalendarSelect setSelectedDate={setSelectedDate} />
         </span>

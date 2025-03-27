@@ -4,7 +4,7 @@
   left: 0;
   width: 100%;
   z-index: 1000;
-  font-family: 'Noto Sans Thai', sans-serif;
+  font-family: 'Noto Sans Thai';
 }
 
 .keyboard-scroll-area {
@@ -55,7 +55,7 @@ body.keyboard-visible {
 
 /* Existing keyboard styles */
 .simple-keyboard {
-  font-family: 'Kanit', sans-serif !important;
+  font-family: 'Noto Sans Thai' !important;
   border-radius: 8px;
   background-color: #f8f8f8;
   max-width: 1100px;
@@ -67,8 +67,8 @@ body.keyboard-visible {
 }
 
 .simple-keyboard.hg-theme-default .hg-button {
-  font-family: 'Kanit', sans-serif !important;
-  font-size: 16px !important;
+  font-family: 'Noto Sans Thai' !important;
+  font-size: 20px !important;
   height: 50px !important;
   display: flex !important;
   align-items: center !important;

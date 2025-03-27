@@ -11,7 +11,10 @@ const CancelOrderButtonEm = ({ order, onSuccess }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [customerName, setCustomerName] = useState("");
   const [contact, setContact] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [orderId, setOrderId] = useState("");
+  const [orderIdError, setOrderIdError] = useState("");
+  const [customerNameError, setCustomerNameError] = useState("");
+  const [contactError, setContactError] = useState("");
 
   console.log("cancel order", order);
 
@@ -21,17 +24,43 @@ const CancelOrderButtonEm = ({ order, onSuccess }) => {
 
   const closeModal = () => {
     setIsModalOpen(false);
+    setOrderIdError(""); 
+  };
+
+  const validateOrderId = () => {
+    let isValid = true;
+
+    if (orderId !== order.order_id) {
+      setOrderIdError("หมายเลขออเดอร์ไม่ถูกต้อง");
+      isValid = false;
+    } else {
+      setOrderIdError("");
+    }
+
+    if (!customerName.trim()) {
+      setCustomerNameError("กรุณากรอกชื่อลูกค้า");
+      isValid = false;
+    } else {
+      setCustomerNameError("");
+    }
+
+    if (!contact.trim()) {
+      setContactError("กรุณากรอกเบอร์โทรศัพท์ลูกค้า");
+      isValid = false;
+    } else {
+      setContactError("");
+    }
+
+    return isValid;
   };
 
   const cancelOrder = async () => {
+    if (!validateOrderId()) return; 
+
     const customerData = {
-      order_id: order.order_id,
-      // order_date: Date.now(),
-      // queue_number: order.queue_number,
-      // status: "canceled",
+      order_id: orderId,
       customer_name: customerName,
       contact: contact,
-      // cancel_status: "ยังไม่คืนเงิน",
     };
 
     console.log("customerData", customerData);
@@ -75,15 +104,18 @@ const CancelOrderButtonEm = ({ order, onSuccess }) => {
 
             <div className="mt-2">
               <label>หมายเลขออเดอร์</label>
-              <input
-                type="text"
-                value={order.order_id}
-                disabled
-                className="w-full border border-[#DD9F52] rounded-full px-3 py-1.5 text-gray-600 bg-gray-100"
+              <ThaiVirtualKeyboardInput
+                placeholder="กรอกหมายเลขออเดอร์..."
+                value={orderId}
+                onChange={setOrderId}
+                className="w-full border border-[#DD9F52] rounded-full px-3 py-1.5 text-gray-600 focus:outline-none focus:ring-2 focus:ring-brown-400"
               />
+              {orderIdError && (
+                <p className="text-red-500 text-sm">{orderIdError}</p>
+              )}
             </div>
 
-            <div className="mt-2">
+            <div className="mt-4">
               <label>ชื่อลูกค้า</label>
               <ThaiVirtualKeyboardInput
                 placeholder="กรอกชื่อของลูกค้า..."
@@ -91,9 +123,12 @@ const CancelOrderButtonEm = ({ order, onSuccess }) => {
                 onChange={setCustomerName}
                 className="w-full border border-[#DD9F52] rounded-full px-3 py-1.5 text-gray-600 focus:outline-none focus:ring-2 focus:ring-brown-400"
               />
+              {customerNameError && (
+                <p className="text-red-500 text-sm">{customerNameError}</p>
+              )}
             </div>
 
-            <div className="mt-2">
+            <div className="mt-4">
               <label>เบอร์โทรศัพท์ลูกค้า</label>
               <ThaiVirtualKeyboardInput
                 placeholder="กรอกเบอร์โทรศัพท์ของลูกค้า..."
@@ -101,17 +136,20 @@ const CancelOrderButtonEm = ({ order, onSuccess }) => {
                 onChange={setContact}
                 className="w-full border border-[#DD9F52] rounded-full px-3 py-1.5 text-gray-600 focus:outline-none focus:ring-2 focus:ring-brown-400"
               />
+              {contactError && (
+                <p className="text-red-500 text-sm">{contactError}</p>
+              )}
             </div>
 
             <div className="flex justify-between space-x-4 mt-10">
               <button
-                className="w-full rounded-full text-[#DD9F52] border border-[#DD9F52] hover:bg-[#f5e9dc] transition-colors font-bold"
+                className="w-[200px] rounded-full text-[#DD9F52] border border-[#DD9F52] hover:bg-[#f5e9dc] transition-colors font-bold"
                 onClick={closeModal}
               >
                 ยกเลิก
               </button>
               <button
-                className="w-full bg-[#DD9F52] hover:bg-[#C68A47] text-white font-bold py-2 px-4 rounded-full"
+                className="w-[200px] bg-[#DD9F52] hover:bg-[#C68A47] text-white font-bold py-2 px-4 rounded-full"
                 onClick={cancelOrder}
               >
                 ยกเลิกออเดอร์

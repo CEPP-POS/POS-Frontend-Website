@@ -20,6 +20,7 @@ const cartSlice = createSlice({
         price,
         quantity,
       } = action.payload;
+
       const newItem = {
         menuId,
         menuName,
@@ -44,7 +45,7 @@ const cartSlice = createSlice({
       );
 
       if (existingItemIndex !== -1) {
-        // Item exists, so update quantity
+        // Item exists, so update quantity and total price
         state.items[existingItemIndex].quantity += quantity;
       } else {
         // New item, add to the cart
@@ -63,9 +64,11 @@ const cartSlice = createSlice({
             JSON.stringify(action.payload.selectedAddOn)
       );
     },
+
     clearCart: (state) => {
       state.items = [];
     },
+
     increaseQuantity: (state, action) => {
       const item = state.items.find(
         (item) =>
@@ -78,8 +81,10 @@ const cartSlice = createSlice({
       );
       if (item) {
         item.quantity += 1;
+        item.price = (item.price / (item.quantity - 1)) * item.quantity;
       }
     },
+
     decreaseQuantity: (state, action) => {
       const item = state.items.find(
         (item) =>
@@ -92,6 +97,7 @@ const cartSlice = createSlice({
       );
       if (item && item.quantity > 1) {
         item.quantity -= 1;
+        item.price = (item.price / (item.quantity + 1)) * item.quantity;
       }
     },
   },
@@ -104,4 +110,5 @@ export const {
   increaseQuantity,
   decreaseQuantity,
 } = cartSlice.actions;
+
 export default cartSlice.reducer;

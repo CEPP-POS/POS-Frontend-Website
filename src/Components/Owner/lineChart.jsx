@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -10,6 +10,7 @@ import {
   Legend,
 } from "chart.js";
 
+// Register required elements
 ChartJS.register(
   LineElement,
   PointElement,
@@ -18,6 +19,7 @@ ChartJS.register(
   Tooltip,
   Legend
 );
+
 ChartJS.defaults.font.family = "Noto Sans Thai";
 ChartJS.defaults.font.size = 16;
 ChartJS.defaults.color = "black";
@@ -39,11 +41,11 @@ const LineChart = ({ dailyStats }) => {
     "ธ.ค.",
   ];
 
+  // Prepare the chart data only when dailyStats are available
   const data = {
     labels: dailyStats
       ? dailyStats.map((stat) => {
           const date = new Date(stat.date);
-          // date + month
           return `${date.getDate()} ${monthNames[date.getMonth()]}`;
         })
       : [],
@@ -102,9 +104,19 @@ const LineChart = ({ dailyStats }) => {
     },
   };
 
+  // Force re-render of chart when `dailyStats` changes
+  const [chartKey, setChartKey] = useState(0);
+
+  useEffect(() => {
+    if (dailyStats && dailyStats.length > 0) {
+      // When dailyStats changes, update the key to force a re-render of the chart
+      setChartKey((prevKey) => prevKey + 1);
+    }
+  }, [dailyStats]); // Dependency array ensures it runs when dailyStats change
+
   return (
     <div className="w-full h-96">
-      <Line data={data} options={options} />
+      <Line key={chartKey} data={data} options={options} />
     </div>
   );
 };

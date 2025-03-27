@@ -17,27 +17,15 @@ const EditOwnerProduct = () => {
   const URL = configureAPI[environment].URL;
 
   const [productData, setProductData] = useState(null);
+  const [productName, setProductName] = useState();
   const [loading, setLoading] = useState(false);
-  const [updateFormData, setUpdateFormData] = useState({
-    quantity_in_stock: "",
-    total_volume: "",
-    net_volume: "",
-    expiration_date: "",
-  });
   const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
   const [categoryOption, setCategoryOption] = useState("");
   const [categories, setCategories] = useState([]);
   const ingredientId = new URLSearchParams(location.search).get("id");
   const [productImage, setProductImage] = useState(null);
-  const [productName, setProductName] = useState("");
-  const [productAmount, setProductAmount] = useState("");
   const [unitOption, setUnitOption] = useState("");
-  const [netVolume, setNetVolume] = useState("");
-  const [expirationDate, setExpirationDate] = useState(null);
-  const [volumeUnit, setVolumeUnit] = useState("");
   const [isUnitDropdownOpen, setIsUnitDropdownOpen] = useState(false);
-  const [isVolumeUnitDropdownOpen, setIsVolumeUnitDropdownOpen] =
-    useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
   const [imageFile, setImageFile] = useState(null);
 
@@ -132,59 +120,80 @@ const EditOwnerProduct = () => {
         const data = await response.json();
         console.log("Fetched product data:", data);
 
-        if (data.stock_data && data.stock_data.length > 0) {
-          const stockInfo = data.stock_data[0]; // Get the first stock entry
-          setProductData(data);
-          setUpdateFormData({
-            quantity_in_stock: stockInfo.quantity_in_stock || "",
-            total_volume: stockInfo.total_volume || "",
-            net_volume: stockInfo.net_volume || "",
-            expiration_date: stockInfo.expiration_date || "",
-          });
-          setCategoryOption(data.category_name || "");
-        } else {
-          console.error("No stock data available");
-          setProductData(data);
-        }
+        setProductData(data);
+        setUnitOption(data.unit || "");
+        setProductName(data.ingredient_name);
+        setCategoryOption(data.category_name || "");
       } catch (error) {
         console.error("Error fetching product data:", error);
       }
     };
 
     fetchProductData();
-  }, [ingredientId, URL]);
+  }, [ingredientId]);
+
+  console.log("DATA INGREDIENT:", productData);
 
   const imageUrl = productData?.image_url
     ? `${URL}/${productData.image_url.replace(/\\/g, "/")}`
     : null;
 
-  const handleUpdateSubmit = async () => {
+  useEffect(() => {
+    console.log("Updated PRODUCT DATA INGREDIENT:", productName);
+  }, [productName]);
+
+  const handleInputChange = (value) => {
+    console.log("User Input:", value);
+    setProductName(value);
+  };
+
+  const handleSave = async () => {
     setLoading(true);
+
+    const ingredientData = {};
+    console.log("Sending updated data:", ingredientData);
+
     try {
-      const payload = {
-        update_id: productData.update_id,
-        quantity_in_stock: parseInt(updateFormData.quantity_in_stock),
-        total_volume: parseInt(updateFormData.total_volume),
-        net_volume: parseInt(updateFormData.net_volume),
-        expiration_date: updateFormData.expiration_date,
-      };
+      let imagePath = productData.image_url;
+
+      if (imageFile) {
+        imagePath = await uploadImage(imageFile);
+      }
+
+      if (imagePath !== productData.image_url) {
+        ingredientData.image_url = imagePath;
+      }
+      console.log("PRODUCT NAME:", productName);
+      console.log("INGREDIENT NAME:", productData.ingredient_name);
+
+      if (productName && productName !== productData.ingredient_name) {
+        ingredientData.ingredient_name = productName;
+      }
+      if (unitOption && unitOption !== productData.unit) {
+        ingredientData.unit = unitOption;
+      }
+      if (categoryOption && categoryOption !== productData.category_name) {
+        ingredientData.category_name = categoryOption;
+      }
+
+      if (Object.keys(ingredientData).length === 0) {
+        console.log("No changes detected. Skipping update.");
+        return;
+      }
 
       const response = await fetchApi(
-        // edit api
-        // `${URL}/owner/update-stock-ingredients/${productData.update_id}`,
+        `${URL}/owner/edit-stock-ingredients/${ingredientId}`,
         "PATCH",
-        payload
+        ingredientData
       );
 
       if (response.ok) {
-        alert("อัปเดตข้อมูลสำเร็จ");
-        navigate("/stock");
+        setIsModalOpen(true);
       } else {
-        throw new Error("Failed to update product");
+        console.error("Failed to update ingredient");
       }
     } catch (error) {
-      console.error("Error updating product:", error);
-      alert("เกิดข้อผิดพลาดในการอัปเดตข้อมูล");
+      console.error("Error updating ingredient:", error);
     } finally {
       setLoading(false);
     }
@@ -211,12 +220,20 @@ const EditOwnerProduct = () => {
                   alt="Uploaded"
                   className="h-80 object-contain"
                 />
-              ) : (
+              ) : productImage ? (
                 <img
-                  src="https://cdn-icons-png.flaticon.com/512/2716/2716054.png"
-                  alt="Upload Icon"
-                  className="w-40 h-40"
+                  src={productImage}
+                  alt="Uploaded"
+                  className="h-80 object-contain"
                 />
+              ) : (
+                <>
+                  <img
+                    src="https://cdn-icons-png.flaticon.com/512/2716/2716054.png"
+                    alt="Upload Icon"
+                    className="w-40 h-40"
+                  />
+                </>
               )}
               <p className="text-center text-brown-500 mb-2 mt-2">
                 <span className="text-[#DD9F52] font-bold">คลิก</span>{" "}
@@ -242,10 +259,8 @@ const EditOwnerProduct = () => {
                 <span className="font-bold">ชื่อสินค้า</span>
               </div>
               <ThaiVirtualKeyboardInput
-                value={productData.ingredient_name}
-                onChange={(value) =>
-                  setProductData({ ...productData, ingredient_name: value })
-                }
+                value={productName}
+                onChange={handleInputChange}
                 placeholder="ชื่อสินค้า"
                 className="w-full border border-[#DD9F52] bg-[#F5F5F5] rounded-full p-3 text-gray-600 focus:outline-none focus:ring-2 focus:ring-brown-400"
               />
@@ -355,8 +370,8 @@ const EditOwnerProduct = () => {
             ย้อนกลับ
           </button>
           <button
-            className="px-6 py-2 bg-[#DD9F52] text-white rounded-full hover:bg-[#C68A47] transition-colors font-bold"
-            onClick={handleUpdateSubmit}
+            className="px-6 py-2 w-[300px] bg-[#DD9F52] text-white rounded-full hover:bg-[#C68A47] transition-colors font-bold"
+            onClick={handleSave}
           >
             บันทึก
           </button>

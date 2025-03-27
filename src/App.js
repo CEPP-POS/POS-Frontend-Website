@@ -26,7 +26,6 @@ import Order from "./Pages/Employee/main/order";
 import Home from "./Pages/Owner/SaleSummary/OverView/home";
 import SaleSummaryGraph from "./Pages/Owner/SaleSummary/SaleSummaryGraph/saleSummaryGraph";
 import Stock from "./Pages/Owner/SaleSummary/Stock/stock";
-import NotificationSummary from "./Pages/Owner/SaleSummary/NotificationSummary/notificationSummary";
 import AddOwnerProduct from "./Pages/Owner/SaleSummary/Stock/addOwnerProduct";
 import ProductDetail from "./Pages/Owner/SaleSummary/Stock/productDetail";
 import CancelOrderSummary from "./Pages/Owner/SaleSummary/OrderSummary/cancelOrderSummary";
@@ -49,6 +48,7 @@ import Branch from "./Pages/Owner/SetupShop/branch";
 import WebSocket from "ws";
 import { WebSocketProvider } from "./webSocketContext";
 import EditOwnerProduct from "./Pages/Owner/SaleSummary/Stock/editOwnerProduct";
+import SyncBranch from "./Pages/Owner/SetupShop/syncBranch";
 
 function App() {
   return (
@@ -69,10 +69,7 @@ function App() {
             <Route path="/order-summary" element={<OrderSummary />} />
             <Route path="/sale-summary-graph" element={<SaleSummaryGraph />} />
             <Route path="/stock" element={<Stock />} />
-            <Route
-              path="/notification-summary"
-              element={<NotificationSummary />}
-            />
+
             <Route path="/add-owner-product" element={<AddOwnerProduct />} />
             <Route path="/product-detail" element={<ProductDetail />} />
             <Route
@@ -100,6 +97,8 @@ function App() {
 
             {/* Routes with Navbar : other flow*/}
             <Route element={<NavbarLayout />}>
+              <Route path="/sync-branch" element={<SyncBranch />} />
+
               <Route path="/main-menu" element={<MainMenu />} />
               <Route path="/role" element={<UserRole />} />
               <Route path="/owner" element={<OwnerMenu />} />

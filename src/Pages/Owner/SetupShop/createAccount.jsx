@@ -7,7 +7,6 @@ import fetchApi from "../../../Config/fetchApi";
 import configureAPI from "../../../Config/configureAPI";
 import bcrypt from "bcryptjs";
 import { useDispatch, useSelector } from "react-redux";
-import { setUser } from "../../../Config/redux/userSlice";
 import { jwtDecode } from "jwt-decode";
 import LoadingPopup from "../../../Components/General/loadingPopup";
 
@@ -39,7 +38,7 @@ const CreateAccount = () => {
       const response = await fetchApi(`${URL}/owner/create-employee`, "POST", {
         email: email,
         password: password,
-        branch_id: 3, //mock branch id for now
+        branch_id: branchId, //mock branch id for now
       });
 
       if (response.ok) {
