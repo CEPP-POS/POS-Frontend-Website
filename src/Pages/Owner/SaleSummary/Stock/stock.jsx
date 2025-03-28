@@ -353,7 +353,7 @@ const Stock = () => {
   return (
     <div className="bg-[#F5F5F5] h-screen-website">
       <SideBar menuTab={"stock"} />
-      <div className="px-10 mt-[40px]">
+      <div className="px-10 mt-[40px] bg-[#F5F5F5]">
         <h1 className="font-bold text-3xl">คลังสินค้า</h1>
         <div className="flex justify-between items-center">
           <span className="flex items-center">

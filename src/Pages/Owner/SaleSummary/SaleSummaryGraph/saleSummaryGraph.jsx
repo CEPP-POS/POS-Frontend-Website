@@ -54,7 +54,7 @@ const SaleSummaryGraph = () => {
   }, [selectedDate]);
 
   return (
-    <div className="h-screen-website flex flex-col">
+    <div className="h-screen-website flex flex-col bg-[#F5F5F5]">
       <SideBar menuTab={"saleSummaryGraph"} />
       <div className="ml-8 mr-8">
         <h1 className="font-bold text-3xl">ภาพรวมยอดขายรายเดือน</h1>
