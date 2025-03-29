@@ -49,6 +49,7 @@ import WebSocket from "ws";
 import { WebSocketProvider } from "./webSocketContext";
 import EditOwnerProduct from "./Pages/Owner/SaleSummary/Stock/editOwnerProduct";
 import SyncBranch from "./Pages/Owner/SetupShop/syncBranch";
+import TestPhoneDetect from "./Pages/Test/TestPhoneDetect";
 
 function App() {
   return (
@@ -56,6 +57,9 @@ function App() {
       <WebSocketProvider>
         <Router>
           <Routes>
+            {/* Test Route */}
+            <Route path="/test-phone-detect" element={<TestPhoneDetect />} />
+
             {/* Routes without Navbar : login flow */}
             <Route path="/" element={<Login />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />

@@ -117,11 +117,17 @@ function PhoneDetect({ onCapture, socket }) {
 
   useEffect(() => {
     const runCoco = async () => {
-      const net = await cocossd.load();
-      console.log("Model loaded:", net);
-      setInterval(() => {
-        detect(net);
-      }, 10);
+      try {
+        const net = await cocossd.load({
+          base: "lite_mobilenet_v2", // ใช้โมเดลที่เล็กและเร็วที่สุด
+        });
+        console.log("Model loaded:", net);
+        setInterval(() => {
+          detect(net);
+        }, 10);
+      } catch (error) {
+        console.error("Error loading model:", error);
+      }
     };
     runCoco();
   }, []);
