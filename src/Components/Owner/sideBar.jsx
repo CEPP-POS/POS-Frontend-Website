@@ -39,8 +39,6 @@ const SideBar = ({ menuTab }) => {
     navigate("/notification-summary");
   };
 
-  console.log("branch ID", branchId);
-
   useEffect(() => {
     const fetchBranches = async () => {
       try {

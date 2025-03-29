@@ -163,7 +163,9 @@ const SweetLevelChoice = () => {
           } else {
             requestData = {
               sweetness_group_name: groupName,
-              options: choices.map((choice) => choice.name),
+              options: choices.map((choice) => ({
+                level_name: choice.name,
+              })),
               menu_id: selectedMenus,
             };
           }

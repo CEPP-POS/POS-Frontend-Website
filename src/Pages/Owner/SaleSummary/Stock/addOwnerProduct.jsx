@@ -350,24 +350,6 @@ const AddOwnerProduct = () => {
           </div>
         </div>
 
-        {/* Modal */}
-        {isModalOpen && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-[#F5F5F5] rounded-lg p-6 w-[400px] text-center">
-              <AiOutlineCheckCircle
-                size={60}
-                className="text-green-500 mx-auto"
-              />
-              <h2 className="font-bold text-xl my-4">บันทึกเสร็จสิ้น</h2>
-              <button
-                className="px-4 py-2 bg-[#DD9F52] text-white rounded-full hover:bg-[#C68A47] transition-colors font-bold"
-                onClick={closeModal}
-              >
-                ปิด
-              </button>
-            </div>
-          </div>
-        )}
         {/* Save and Back buttons */}
         <div className="flex fixed bottom-0 left-0 px-4 py-4 pb-4 w-full space-x-8 justify-between bg-[#F5F5F5]">
           <button

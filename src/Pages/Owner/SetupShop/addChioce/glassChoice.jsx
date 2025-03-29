@@ -175,14 +175,10 @@ const GlassChoice = () => {
 
             console.log("PATCH requestData:", requestData);
           } else {
-            const formattedOptions = choices.map((choice) => {
-              const option = {};
-              const priceValue = parseFloat(choice.price || "0");
-              option[choice.name] = {
-                price: priceValue,
-              };
-              return option;
-            });
+            const formattedOptions = choices.map((choice) => ({
+              size_name: choice.name,
+              price: parseFloat(choice.price || "0").toFixed(2),
+            }));
 
             requestData = {
               size_group_name: groupName,

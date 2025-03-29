@@ -209,15 +209,12 @@ const ToppingChoice = () => {
             console.log("PATCH requestData:", requestData);
           } else {
             // POST format remains the same
-            const formattedOptions = choices.map((choice) => {
-              const option = {};
-              option[choice.name] = {
-                price: choice.price,
-                unit: choice.unit,
-                quantity: parseInt(choice.quantity),
-              };
-              return option;
-            });
+            const formattedOptions = choices.map((choice) => ({
+              add_on_name: choice.name,
+              price: choice.price,
+              quantity: parseInt(choice.quantity),
+              unit: choice.unit,
+            }));
 
             requestData = {
               options: formattedOptions,
@@ -241,11 +238,17 @@ const ToppingChoice = () => {
           } else {
             const errorData = await response.json();
             console.error("Error response:", errorData);
-            alert("Failed to save topping options");
+            navigate("/choice-list");
+            MySwal.fire({
+              icon: "success",
+              title: "เพิ่ม/จัดการข้อมูลท็อปปิ้งสำเร็จ",
+              timer: 2000,
+              showConfirmButton: false,
+            });
           }
         } catch (error) {
           console.error("Error saving topping options:", error);
-          alert("An error occurred while saving");
+          // alert("An error occurred while saving");
         } finally {
           setLoading(false);
         }

@@ -176,9 +176,9 @@ const TypeChoice = () => {
             };
             console.log("PATCH requestData:", requestData);
           } else {
-            // Transform choices into the required format for POST
             const formattedOptions = choices.map((choice) => ({
-              [choice.name]: choice.price,
+              type_name: choice.name,
+              price_difference: parseFloat(choice.price || "0").toFixed(2),
             }));
 
             requestData = {

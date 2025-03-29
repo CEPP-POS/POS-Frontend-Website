@@ -272,6 +272,18 @@ const Order = () => {
     fetchOrders();
   };
 
+  // Function to retry syncing offline data
+  const handleSyncClick = async () => {
+    try {
+      console.log("STEP 4 => RESEND TO SERVER");
+      const response = await fetchApi(`${URL}/status/retry`, "GET");
+      const result = await response.json();
+      console.log("Sync response:", result);
+    } catch (error) {
+      console.error("Error during sync:", error);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -406,7 +418,7 @@ const Order = () => {
 
           {/* Sync Button */}
           <button
-            onClick={null}
+            onClick={handleSyncClick}
             className="py-2 bg-[#DD9F52] hover:bg-[#C68A47] text-white rounded-full w-full"
           >
             <div className="flex justify-center items-center gap-2 text-2xl">

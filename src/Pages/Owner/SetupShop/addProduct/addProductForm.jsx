@@ -105,9 +105,11 @@ const AddProductForm = () => {
           : { image_url: productData.image_url }),
       };
 
+      console.log("DATA TO SEND:", payload);
+
       const response = await fetchApi(endpoint, method, payload);
 
-      console.log("DATA TO SEND:", payload);
+      console.log("DATA SENT:", payload);
 
       console.log("RESPONSE :", response);
       if (response.ok) {

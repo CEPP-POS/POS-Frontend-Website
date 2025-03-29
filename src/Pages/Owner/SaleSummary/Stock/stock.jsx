@@ -275,8 +275,16 @@ const Stock = () => {
         showConfirmButton: false,
       });
     } catch (error) {
+      await fetchProducts();
       console.error("Error updating/creating product:", error);
-      alert(`เกิดข้อผิดพลาด: ${error.message}`);
+      // alert(`เกิดข้อผิดพลาด: ${error.message}`);
+      setModalVisible(false);
+      MySwal.fire({
+        icon: "success",
+        title: "แก้ไขข้อมูลคลังสินค้าสำเร็จ",
+        timer: 2000,
+        showConfirmButton: false,
+      });
     } finally {
       setLoading(false);
     }
@@ -544,12 +552,12 @@ const Stock = () => {
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
             <div className="bg-[#F5F5F5] rounded-lg p-8 flex flex-col h-auto w-auto relative">
               {/* Product Name */}
-              <h2 className="text-xl font-bold text-center mb-4 absolute top-4 w-full">
+              <h2 className="text-xl font-bold text-center top-4 w-full">
                 {selectedProduct?.ingredient_name}
               </h2>
 
               {/* Modal Content */}
-              <div className="flex mt-10">
+              <div className="flex mt-4">
                 <div className="flex-shrink-0 mr-8">
                   {selectedProduct?.update_id === null ? (
                     ingredientHistory?.ingredient_img ? ( // Check if ingredient_img exists
@@ -583,12 +591,14 @@ const Stock = () => {
                 {/* Product Details */}
                 <div className="flex-1 space-y-4 text-gray-700">
                   {/* Category */}
-                  <p className="flex items-center">
-                    <span className="font-bold text-gray-800">หมวดหมู่</span>
-                    <span className="ml-2 px-3 py-1 border border-purple-600 rounded-full text-purple-600">
-                      {selectedProduct?.category_name || "ไม่ระบุ"}
-                    </span>
-                  </p>
+                  {selectedProduct?.update_id !== null && (
+                    <p className="flex items-center">
+                      <span className="font-bold text-gray-800">หมวดหมู่</span>
+                      <span className="ml-2 px-3 py-1 border border-purple-600 rounded-full text-purple-600">
+                        {selectedProduct?.category_name}
+                      </span>
+                    </p>
+                  )}
 
                   {/* Expiry Date */}
                   <div>

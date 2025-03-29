@@ -37,10 +37,19 @@ const Login = () => {
         return;
       }
 
-      const response = await fetchApi(`${URL}/auth/login`, "POST", {
-        email: email,
-        password: password,
+      const response = await fetch(`${URL}/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+        }),
       });
+
+      console.log("Response object:", response); // Log the response object here to inspect its structure
+      console.log("Response type:", typeof response); // Check the type of the response object
 
       if (response.ok) {
         const userData = await response.json();
