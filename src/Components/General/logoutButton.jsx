@@ -33,7 +33,7 @@ const LogoutButton = () => {
 
       {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center z-1">
+        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center z-10">
           <div className="bg-[#F5F5F5] p-8 rounded-lg w-[700px] h-[300px] shadow-lg flex flex-col justify-center items-center text-center">
             <h2 className="text-3xl mb-4 text-black font-bold">
               ยืนยันการออกจากระบบ ?

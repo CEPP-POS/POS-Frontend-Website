@@ -244,7 +244,7 @@ const Stock = () => {
           net_volume: parseInt(updateFormData.net_volume),
           unit: selectedProduct.unit,
           quantity_in_stock: parseInt(currentStockQuantity),
-          category_name: selectedProduct.category_name || "",
+          //category_name: selectedProduct.category_name || "",
           expiration_date:
             updateFormData.expiration_date ||
             new Date().toISOString().split("T")[0],
@@ -629,14 +629,14 @@ const Stock = () => {
                 {/* Product Details */}
                 <div className="flex-1 space-y-4 text-gray-700">
                   {/* Category */}
-                  {selectedProduct?.update_id !== null && (
+                  {/* {selectedProduct?.update_id !== null && (
                     <p className="flex items-center">
                       <span className="font-bold text-gray-800">หมวดหมู่</span>
                       <span className="ml-2 px-3 py-1 border border-purple-600 rounded-full text-purple-600">
                         {selectedProduct?.category_name}
                       </span>
                     </p>
-                  )}
+                  )} */}
 
                   {/* Expiry Date */}
                   <div>

@@ -145,7 +145,7 @@ const IngredientDropdown = ({ value, onChange }) => {
         <button
           type="button"
           onClick={toggleDropdown}
-          className="ml-2 p-2 bg-[#D4B28C] text-white rounded-full w-10 h-10 flex items-center justify-center"
+          className="ml-2 p-2 bg-[#DD9F52] text-white rounded-full w-10 h-10 flex items-center justify-center"
           title="แสดง/ซ่อนรายการวัตถุดิบ"
         >
           {showDropdown ? (

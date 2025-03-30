@@ -223,9 +223,9 @@ function PhoneDetect({ onCapture, socket }) {
     <div>
       <div className="camera-section">
         {/* Model Status */}
-        <div className="model-status mb-2 mt-4 text-sm text-gray-600">
+        {/* <div className="model-status mb-2 mt-4 text-sm text-gray-600">
           สถานะโมเดล {modelStatus}
-        </div>
+        </div> */}
 
         <div className="flex">
           {showWebcam && (

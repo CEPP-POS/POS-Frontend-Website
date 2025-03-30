@@ -34,6 +34,7 @@ const NavbarCustomer = () => {
         if (matchedBranch) {
           setSelectedBranch(matchedBranch);
         } else {
+          setSelectedBranch(branchId);
           console.log("No matching branch found.");
         }
       } catch (error) {

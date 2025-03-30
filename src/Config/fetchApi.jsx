@@ -10,8 +10,8 @@ const fetchApi = async (url, method = "GET", body = null) => {
   };
 
   if (token) headers["Authorization"] = `Bearer ${token}`;
-  if (ownerId) headers["owner_id"] = ownerId;
-  if (branchId) headers["branch_id"] = branchId;
+  if (ownerId) headers["owner-id"] = ownerId;
+  if (branchId) headers["branch-id"] = branchId;
   if (role) headers["role"] = role;
 
   const options = {
@@ -77,15 +77,60 @@ const fetchApi = async (url, method = "GET", body = null) => {
                 Accept: "application/json",
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${sessionStorage.getItem("token")}`,
-                owner_id: sessionStorage.getItem("owner_id"),
-                branch_id: sessionStorage.getItem("branch_id"),
+                "owner-id": sessionStorage.getItem("owner_id"),
+                "branch-id": sessionStorage.getItem("branch_id"),
                 role: sessionStorage.getItem("role"),
               },
               body: JSON.stringify(responseData),
             };
 
             const urlPath = url.replace("http://localhost:3000", "");
-            const mainServerUrl = `http://10.240.67.14/api${urlPath}`;
+            const mainServerUrl = `http://ce67-08.cloud.ce.kmitl.ac.th/api${urlPath}`;
+
+            // if create menu and have payload have image
+            if (urlPath == "/owner/menus" && responseData.image_url) {
+              console.log("Create menu and found image!");
+              console.log("Trying to upload image to MinIO!");
+
+              // will fetch image in local
+              const imageUrl = `http://localhost:3000/${responseData.image_url}`;
+
+              try {
+                console.log("Fetching Image from local...");
+                const imageResponse = await fetch(imageUrl);
+                if (!imageResponse.ok)
+                  throw new Error("Failed to fetch image from local server");
+
+                const imageBlob = await imageResponse.blob();
+                const formData = new FormData();
+                formData.append(
+                  "file",
+                  imageBlob,
+                  responseData.image_url.split("/").pop()
+                );
+
+                console.log("Uploading Image to MinIO...");
+                await fetch(
+                  "http://ce67-08.cloud.ce.kmitl.ac.th/api/owner/menus/upload",
+                  {
+                    method: "POST",
+                    headers: {
+                      Authorization: `Bearer ${sessionStorage.getItem(
+                        "token"
+                      )}`,
+                      "owner-id": sessionStorage.getItem("owner_id"),
+                      "branch-id": sessionStorage.getItem("branch_id"),
+                      role: sessionStorage.getItem("role"),
+                    },
+                    body: formData,
+                  }
+                );
+
+                console.log("✅ Image uploaded successfully!");
+              } catch (error) {
+                console.error("Error uploading image to MinIO:", error);
+              }
+            }
 
             try {
               console.log(
@@ -100,7 +145,7 @@ const fetchApi = async (url, method = "GET", body = null) => {
                 mainServerResponse
               );
 
-              if (!mainServerResponse.ok) {
+              if (!mainServerResponse.ok || !isOnline()) {
                 // เก็บข้อมูลการพยายามส่งที่ล้มเหลวไว้สำหรับ retry ภายหลัง
                 await notifyMainServerFailure(
                   mainServerUrl,
@@ -122,7 +167,7 @@ const fetchApi = async (url, method = "GET", body = null) => {
               await notifyMainServerFailure(
                 urlPath.startsWith("http")
                   ? urlPath
-                  : `http://10.240.67.14/api${urlPath}`,
+                  : `http://ce67-08.cloud.ce.kmitl.ac.th/api${urlPath}`,
                 "POST",
                 502,
                 responseData,
@@ -133,7 +178,7 @@ const fetchApi = async (url, method = "GET", body = null) => {
           // กรณี PUT, PATCH, DELETE
           else {
             const urlPath = url.replace("http://localhost:3000", "");
-            const mainServerUrl = `http://10.240.67.14/api${urlPath}`;
+            const mainServerUrl = `http://ce67-08.cloud.ce.kmitl.ac.th/api${urlPath}`;
 
             try {
               console.log(
@@ -145,7 +190,7 @@ const fetchApi = async (url, method = "GET", body = null) => {
                 mainServerResponse
               );
 
-              if (!mainServerResponse.ok) {
+              if (!mainServerResponse.ok || !isOnline()) {
                 // ดึงข้อมูล body ที่จะส่งไปยัง offline endpoint
                 let bodyData = {};
                 if (options.body) {
@@ -187,7 +232,7 @@ const fetchApi = async (url, method = "GET", body = null) => {
               await notifyMainServerFailure(
                 urlPath.startsWith("http")
                   ? urlPath
-                  : `http://10.240.67.14/api${urlPath}`,
+                  : `http://ce67-08.cloud.ce.kmitl.ac.th/api${urlPath}`,
                 method,
                 502,
                 bodyData,
@@ -267,8 +312,8 @@ const retryFailedRequests = async () => {
         Accept: "application/json",
         "Content-Type": "application/json",
         Authorization: `Bearer ${sessionStorage.getItem("token")}`,
-        owner_id: sessionStorage.getItem("owner_id"),
-        branch_id: sessionStorage.getItem("branch_id"),
+        "owner-id": sessionStorage.getItem("owner_id"),
+        "branch-id": sessionStorage.getItem("branch_id"),
         role: sessionStorage.getItem("role"),
       },
     });

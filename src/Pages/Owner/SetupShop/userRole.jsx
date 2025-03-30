@@ -9,9 +9,14 @@ import CameraDetector from "../../../Components/Customer/cameraDetector";
 
 const UserRole = () => {
   const role = sessionStorage.getItem("role");
+  const branch = sessionStorage.getItem("branch_id");
   const navigate = useNavigate();
 
   console.log("ROLES", role);
+
+  if (role === "employee") {
+    
+  }
 
   const icons = [
     {
