@@ -85,7 +85,7 @@ const fetchApi = async (url, method = "GET", body = null) => {
             };
 
             const urlPath = url.replace("http://localhost:3000", "");
-            const mainServerUrl = `http://10.240.67.14:80/api${urlPath}`;
+            const mainServerUrl = `http://10.240.67.14/api${urlPath}`;
 
             try {
               console.log(
@@ -122,7 +122,7 @@ const fetchApi = async (url, method = "GET", body = null) => {
               await notifyMainServerFailure(
                 urlPath.startsWith("http")
                   ? urlPath
-                  : `http://10.240.67.14:80/api${urlPath}`,
+                  : `http://10.240.67.14/api${urlPath}`,
                 "POST",
                 502,
                 responseData,
@@ -133,7 +133,7 @@ const fetchApi = async (url, method = "GET", body = null) => {
           // กรณี PUT, PATCH, DELETE
           else {
             const urlPath = url.replace("http://localhost:3000", "");
-            const mainServerUrl = `http://10.240.67.14:80/api${urlPath}`;
+            const mainServerUrl = `http://10.240.67.14/api${urlPath}`;
 
             try {
               console.log(
@@ -187,7 +187,7 @@ const fetchApi = async (url, method = "GET", body = null) => {
               await notifyMainServerFailure(
                 urlPath.startsWith("http")
                   ? urlPath
-                  : `http://10.240.67.14:80/api${urlPath}`,
+                  : `http://10.240.67.14/api${urlPath}`,
                 method,
                 502,
                 bodyData,
@@ -286,5 +286,19 @@ const retryFailedRequests = async () => {
     throw error;
   }
 };
+
+async function isOnline() {
+  if (!navigator.onLine) return false; // ตรวจสอบผ่าน navigator.onLine ก่อน
+
+  try {
+    const response = await fetch("https://www.google.com/favicon.ico", {
+      method: "HEAD",
+      mode: "no-cors",
+    });
+    return response.ok; // ถ้าคำขอสำเร็จ แปลว่าออนไลน์
+  } catch (error) {
+    return false; // ถ้าข้อผิดพลาด แปลว่าออฟไลน์
+  }
+}
 
 export { fetchApi as default, retryFailedRequests };

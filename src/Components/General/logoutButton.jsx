@@ -12,6 +12,7 @@ const LogoutButton = () => {
   };
 
   const handleConfirmLogout = () => {
+    sessionStorage.clear();
     setShowModal(false);
     navigate("/");
   };

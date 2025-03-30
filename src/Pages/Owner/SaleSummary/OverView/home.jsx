@@ -65,7 +65,7 @@ const Home = () => {
             <BarChart monthlyRevenue={data?.monthly_revenue} />
           </div>
           <div className="bg-[#F5F5F5] p-4 border rounded-lg">
-            <h2 className="text-xl font-semibold mb-2">เมนูขายดี</h2>
+            <h2 className="text-xl font-semibold mb-2">เมนูขายดีประจำวันนี้</h2>
             <PieChart topThree={data?.top_three} />
           </div>
         </div>

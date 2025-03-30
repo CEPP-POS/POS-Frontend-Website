@@ -14,7 +14,12 @@ const IncomeOrderCancel = ({ data }) => {
           </div>
           <div className="ml-3">
             <p>รายรับทั้งหมด</p>
-            <p className="font-bold">{data?.total_revenue} ฿</p>
+            <p className="font-bold">
+              {Number.isFinite(parseFloat(data?.total_revenue))
+                ? parseInt(data.total_revenue).toLocaleString()
+                : "0"}{" "}
+              บาท
+            </p>
           </div>
         </div>
 

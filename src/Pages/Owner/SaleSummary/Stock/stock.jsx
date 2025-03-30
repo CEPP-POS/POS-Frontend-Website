@@ -59,6 +59,10 @@ const Stock = () => {
   const [currentStockQuantity, setCurrentStockQuantity] = useState();
   const [currentTotalVolume, setCurrentTotalVolume] = useState();
   const [isAddingUpdate, setIsAddingUpdate] = useState(false);
+  const [data, setData] = useState({
+    nearly_out_of_stock: [],
+    nearly_expired: [],
+  });
 
   // Fetch products
   const fetchProducts = async () => {
@@ -91,6 +95,25 @@ const Stock = () => {
   useEffect(() => {
     fetchProducts();
   }, []);
+
+  useEffect(() => {
+    fetchApi(`${URL}/owner/nearly-expired-out`, "GET")
+      .then((res) => res.json())
+      .then((result) => setData(result))
+      .catch((error) => console.error("Error fetching data:", error));
+  }, []);
+
+  const formatDateForDisplay = (dateString) => {
+    if (!dateString) return "";
+
+    const date = new Date(dateString);
+    return date.toLocaleDateString("th-TH", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      timeZone: "Asia/Bangkok", // Ensure Thailand timezone
+    });
+  };
 
   const handleCategoryChange = (categoryId) => {
     setSelectedCategory(categoryId);
@@ -406,31 +429,46 @@ const Stock = () => {
         <div>
           <div className="flex">
             {/* รายรับทั้งหมด */}
-            <div className="flex py-2 px-4 w-3/4 mr-2 bg-[#F5F5F5] border rounded-lg ">
-              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-[#C94C4C]">
-                <div className="pb-1">
-                  <IoWarningOutline color="white" size={32} />
+            {data.nearly_out_of_stock.map((item, index) => (
+              <div className="flex py-2 px-4 w-3/4 mr-2 bg-[#F5F5F5] border rounded-lg ">
+                <div
+                  key={index}
+                  className="flex items-center justify-center w-12 h-12 rounded-full bg-[#C94C4C]"
+                >
+                  <div className="pb-1">
+                    <IoWarningOutline color="white" size={32} />
+                  </div>
+                </div>
+                <div className="ml-3">
+                  <p>สินค้าที่ใกล้จะหมด</p>
+                  <div className="flex">
+                    <p className="font-bold">{item.ingredient_name}</p>
+                    <p className="pl-1">
+                      ปริมาณคงเหลือ {item.total_volume} {item.ingredient_unit}
+                    </p>
+                  </div>
                 </div>
               </div>
-              <div className="ml-3">
-                <p>สินค้าที่ใกล้จะหมด</p>
-                <div className="flex">
-                  <p className="font-bold">แก้วขนาด M</p>
-                  <p className="pl-1">จำนวน 16 ใบ</p>
-                </div>
-              </div>
-            </div>
+            ))}
 
             {/* สินค้าที่ใกล้จะหมดอายุ */}
-            <div className="flex py-2 px-4 w-full bg-[#F5F5F5] border rounded-lg ">
-              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-[#DD9F52]">
-                <IoMdTime color="white" size={32} />
+            {data.nearly_expired.map((item, index) => (
+              <div
+                key={index}
+                className="flex py-2 px-4 w-full bg-[#F5F5F5] border rounded-lg "
+              >
+                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-[#DD9F52]">
+                  <IoMdTime color="white" size={32} />
+                </div>
+                <div className="ml-3">
+                  <p>
+                    สินค้าที่ใกล้จะหมดอายุ วันที่{" "}
+                    {formatDateForDisplay(item.expire_date)}
+                  </p>
+                  <p className="font-bold">{item.ingredient_name}</p>
+                </div>
               </div>
-              <div className="ml-3">
-                <p>สินค้าที่ใกล้จะหมดอายุ วันที่ 16 มกราคม พ.ศ. 2569</p>
-                <p className="font-bold">น้ำเชื่อมมิตรผล</p>
-              </div>
-            </div>
+            ))}
           </div>
 
           {/* Search Bar */}
