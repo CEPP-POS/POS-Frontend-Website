@@ -5,10 +5,13 @@ import configureAPI from "../../../../Config/configureAPI";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import ThaiVirtualKeyboardInput from "../../../../Components/Common/ThaiVirtualKeyboardInput";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 const AddProductForm = () => {
   const environment = process.env.NODE_ENV || "development";
   const URL = configureAPI[environment].URL;
+  const MySwal = withReactContent(Swal);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -102,13 +105,21 @@ const AddProductForm = () => {
           : { image_url: productData.image_url }),
       };
 
+      console.log("DATA TO SEND:", payload);
+
       const response = await fetchApi(endpoint, method, payload);
 
-      console.log("DATA TO SEND:", payload);
+      console.log("DATA SENT:", payload);
 
       console.log("RESPONSE :", response);
       if (response.ok) {
         navigate("/product-list");
+        MySwal.fire({
+          icon: "success",
+          title: "เพิ่ม/จัดการข้อมูลรายการสินค้าสำเร็จ",
+          timer: 2000,
+          showConfirmButton: false,
+        });
       }
     } catch (error) {
       console.error("Error submitting menu:", error);

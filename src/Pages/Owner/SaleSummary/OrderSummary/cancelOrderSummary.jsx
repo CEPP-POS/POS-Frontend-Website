@@ -7,11 +7,14 @@ import fetchApi from "../../../../Config/fetchApi";
 import configureAPI from "../../../../Config/configureAPI";
 import { useNavigate } from "react-router-dom";
 import { IoMdClose } from "react-icons/io";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 const CancelOrderSummary = () => {
   const navigate = useNavigate();
   const environment = process.env.NODE_ENV || "development";
   const URL = configureAPI[environment].URL;
+  const MySwal = withReactContent(Swal);
 
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [selectedOrderData, setSelectedOrderData] = useState(null);
@@ -125,6 +128,12 @@ const CancelOrderSummary = () => {
 
       if (response.ok) {
         setIsEditModalOpen(false);
+        MySwal.fire({
+          icon: "success",
+          title: "แก้ไขสถานะสำเร็จ",
+          timer: 2000,
+          showConfirmButton: false,
+        });
         console.log("Order status updated successfully");
       } else {
         console.error("Failed to update order status");

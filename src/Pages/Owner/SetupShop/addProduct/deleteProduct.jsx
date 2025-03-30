@@ -3,10 +3,13 @@ import fetchApi from "../../../../Config/fetchApi";
 import configureAPI from "../../../../Config/configureAPI";
 import LoadingPopup from "../../../../Components/General/loadingPopup";
 import { useState } from "react";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 const DeleteProduct = ({ isOpen, onClose, onConfirm, product }) => {
   const environment = process.env.NODE_ENV || "development";
   const URL = configureAPI[environment].URL;
+  const MySwal = withReactContent(Swal);
 
   const [loading, setLoading] = useState(false);
 
@@ -22,6 +25,12 @@ const DeleteProduct = ({ isOpen, onClose, onConfirm, product }) => {
 
       if (response.ok) {
         console.log("Product deleted successfully");
+        MySwal.fire({
+          icon: "success",
+          title: "ลบรายการสินค้าสำเร็จ",
+          timer: 2000,
+          showConfirmButton: false,
+        });
         onConfirm();
       } else {
         console.error("Failed to delete the product");

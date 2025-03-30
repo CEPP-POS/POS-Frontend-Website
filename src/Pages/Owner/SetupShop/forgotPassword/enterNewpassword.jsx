@@ -54,6 +54,8 @@ const EnterNewPassword = () => {
           { email: email, newPassword: password }
         );
 
+        console.log("RESET PASSWORD", { email: email, newPassword: password });
+
         if (response.ok) {
           sessionStorage.setItem("password_reset", "true");
           navigate("/create-account");

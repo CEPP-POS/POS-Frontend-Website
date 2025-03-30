@@ -18,6 +18,8 @@ import ThaiVirtualKeyboardInput from "../../../../Components/Common/ThaiVirtualK
 import { AiOutlineDelete } from "react-icons/ai";
 import LoadingPopup from "../../../../Components/General/loadingPopup";
 import DeleteIngredientModal from "../../../../Components/Owner/deleteIngredient";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 const thLocaleWithMondayStart = {
   ...th,
@@ -30,6 +32,7 @@ const thLocaleWithMondayStart = {
 const Stock = () => {
   const environment = process.env.NODE_ENV || "development";
   const URL = configureAPI[environment].URL;
+  const MySwal = withReactContent(Swal);
 
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
@@ -56,6 +59,10 @@ const Stock = () => {
   const [currentStockQuantity, setCurrentStockQuantity] = useState();
   const [currentTotalVolume, setCurrentTotalVolume] = useState();
   const [isAddingUpdate, setIsAddingUpdate] = useState(false);
+  const [data, setData] = useState({
+    nearly_out_of_stock: [],
+    nearly_expired: [],
+  });
 
   // Fetch products
   const fetchProducts = async () => {
@@ -88,6 +95,25 @@ const Stock = () => {
   useEffect(() => {
     fetchProducts();
   }, []);
+
+  useEffect(() => {
+    fetchApi(`${URL}/owner/nearly-expired-out`, "GET")
+      .then((res) => res.json())
+      .then((result) => setData(result))
+      .catch((error) => console.error("Error fetching data:", error));
+  }, []);
+
+  const formatDateForDisplay = (dateString) => {
+    if (!dateString) return "";
+
+    const date = new Date(dateString);
+    return date.toLocaleDateString("th-TH", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      timeZone: "Asia/Bangkok", // Ensure Thailand timezone
+    });
+  };
 
   const handleCategoryChange = (categoryId) => {
     setSelectedCategory(categoryId);
@@ -218,7 +244,7 @@ const Stock = () => {
           net_volume: parseInt(updateFormData.net_volume),
           unit: selectedProduct.unit,
           quantity_in_stock: parseInt(currentStockQuantity),
-          category_name: selectedProduct.category_name || "",
+          //category_name: selectedProduct.category_name || "",
           expiration_date:
             updateFormData.expiration_date ||
             new Date().toISOString().split("T")[0],
@@ -265,9 +291,23 @@ const Stock = () => {
 
       await fetchProducts();
       setModalVisible(false);
+      MySwal.fire({
+        icon: "success",
+        title: "แก้ไขข้อมูลคลังสินค้าสำเร็จ",
+        timer: 2000,
+        showConfirmButton: false,
+      });
     } catch (error) {
+      await fetchProducts();
       console.error("Error updating/creating product:", error);
-      alert(`เกิดข้อผิดพลาด: ${error.message}`);
+      // alert(`เกิดข้อผิดพลาด: ${error.message}`);
+      setModalVisible(false);
+      MySwal.fire({
+        icon: "success",
+        title: "แก้ไขข้อมูลคลังสินค้าสำเร็จ",
+        timer: 2000,
+        showConfirmButton: false,
+      });
     } finally {
       setLoading(false);
     }
@@ -283,6 +323,12 @@ const Stock = () => {
       if (response.ok) {
         console.log("Ingredient removed successfully!");
         await fetchProducts(); // Refresh the ingredient list
+        MySwal.fire({
+          icon: "success",
+          title: "ลบวัตถุดิบสำเร็จ",
+          timer: 2000,
+          showConfirmButton: false,
+        });
       } else {
         throw new Error("Failed to remove ingredient");
       }
@@ -338,7 +384,7 @@ const Stock = () => {
   return (
     <div className="bg-[#F5F5F5] h-screen-website">
       <SideBar menuTab={"stock"} />
-      <div className="px-10 mt-[40px]">
+      <div className="px-10 mt-[40px] bg-[#F5F5F5]">
         <h1 className="font-bold text-3xl">คลังสินค้า</h1>
         <div className="flex justify-between items-center">
           <span className="flex items-center">
@@ -383,31 +429,46 @@ const Stock = () => {
         <div>
           <div className="flex">
             {/* รายรับทั้งหมด */}
-            <div className="flex py-2 px-4 w-3/4 mr-2 bg-[#F5F5F5] border rounded-lg ">
-              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-[#C94C4C]">
-                <div className="pb-1">
-                  <IoWarningOutline color="white" size={32} />
+            {data.nearly_out_of_stock.map((item, index) => (
+              <div className="flex py-2 px-4 w-3/4 mr-2 bg-[#F5F5F5] border rounded-lg ">
+                <div
+                  key={index}
+                  className="flex items-center justify-center w-12 h-12 rounded-full bg-[#C94C4C]"
+                >
+                  <div className="pb-1">
+                    <IoWarningOutline color="white" size={32} />
+                  </div>
+                </div>
+                <div className="ml-3">
+                  <p>สินค้าที่ใกล้จะหมด</p>
+                  <div className="flex">
+                    <p className="font-bold">{item.ingredient_name}</p>
+                    <p className="pl-1">
+                      ปริมาณคงเหลือ {item.total_volume} {item.ingredient_unit}
+                    </p>
+                  </div>
                 </div>
               </div>
-              <div className="ml-3">
-                <p>สินค้าที่ใกล้จะหมด</p>
-                <div className="flex">
-                  <p className="font-bold">แก้วขนาด M</p>
-                  <p className="pl-1">จำนวน 16 ใบ</p>
-                </div>
-              </div>
-            </div>
+            ))}
 
             {/* สินค้าที่ใกล้จะหมดอายุ */}
-            <div className="flex py-2 px-4 w-full bg-[#F5F5F5] border rounded-lg ">
-              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-[#DD9F52]">
-                <IoMdTime color="white" size={32} />
+            {data.nearly_expired.map((item, index) => (
+              <div
+                key={index}
+                className="flex py-2 px-4 w-full bg-[#F5F5F5] border rounded-lg "
+              >
+                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-[#DD9F52]">
+                  <IoMdTime color="white" size={32} />
+                </div>
+                <div className="ml-3">
+                  <p>
+                    สินค้าที่ใกล้จะหมดอายุ วันที่{" "}
+                    {formatDateForDisplay(item.expire_date)}
+                  </p>
+                  <p className="font-bold">{item.ingredient_name}</p>
+                </div>
               </div>
-              <div className="ml-3">
-                <p>สินค้าที่ใกล้จะหมดอายุ วันที่ 16 มกราคม พ.ศ. 2569</p>
-                <p className="font-bold">น้ำเชื่อมมิตรผล</p>
-              </div>
-            </div>
+            ))}
           </div>
 
           {/* Search Bar */}
@@ -529,12 +590,12 @@ const Stock = () => {
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
             <div className="bg-[#F5F5F5] rounded-lg p-8 flex flex-col h-auto w-auto relative">
               {/* Product Name */}
-              <h2 className="text-xl font-bold text-center mb-4 absolute top-4 w-full">
+              <h2 className="text-xl font-bold text-center top-4 w-full">
                 {selectedProduct?.ingredient_name}
               </h2>
 
               {/* Modal Content */}
-              <div className="flex mt-10">
+              <div className="flex mt-4">
                 <div className="flex-shrink-0 mr-8">
                   {selectedProduct?.update_id === null ? (
                     ingredientHistory?.ingredient_img ? ( // Check if ingredient_img exists
@@ -568,12 +629,14 @@ const Stock = () => {
                 {/* Product Details */}
                 <div className="flex-1 space-y-4 text-gray-700">
                   {/* Category */}
-                  <p className="flex items-center">
-                    <span className="font-bold text-gray-800">หมวดหมู่</span>
-                    <span className="ml-2 px-3 py-1 border border-purple-600 rounded-full text-purple-600">
-                      {selectedProduct?.category_name || "ไม่ระบุ"}
-                    </span>
-                  </p>
+                  {/* {selectedProduct?.update_id !== null && (
+                    <p className="flex items-center">
+                      <span className="font-bold text-gray-800">หมวดหมู่</span>
+                      <span className="ml-2 px-3 py-1 border border-purple-600 rounded-full text-purple-600">
+                        {selectedProduct?.category_name}
+                      </span>
+                    </p>
+                  )} */}
 
                   {/* Expiry Date */}
                   <div>

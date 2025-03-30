@@ -3,10 +3,13 @@ import configureAPI from "../../../../Config/configureAPI";
 import fetchApi from "../../../../Config/fetchApi";
 import LoadingPopup from "../../../../Components/General/loadingPopup";
 import { useState } from "react";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 const DeleteGroup = ({ isOpen, onClose, onConfirm, deleteCategory }) => {
   const environment = process.env.NODE_ENV || "development";
   const URL = configureAPI[environment].URL;
+  const MySwal = withReactContent(Swal);
 
   const [loading, setLoading] = useState(false);
 
@@ -22,6 +25,12 @@ const DeleteGroup = ({ isOpen, onClose, onConfirm, deleteCategory }) => {
 
       if (response.ok) {
         console.log("category deleted successfully");
+        MySwal.fire({
+          icon: "success",
+          title: "ลบกลุ่มรายการสินค้าสำเร็จ",
+          timer: 2000,
+          showConfirmButton: false,
+        });
         onConfirm();
       } else {
         console.error("Failed to delete the category");

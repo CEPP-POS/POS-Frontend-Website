@@ -9,11 +9,14 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import ThaiVirtualKeyboardInput from "../../../../Components/Common/ThaiVirtualKeyboardInput";
 import LoadingPopup from "../../../../Components/General/loadingPopup";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 const AddOwnerProduct = () => {
   const navigate = useNavigate();
   const environment = process.env.NODE_ENV || "development";
   const URL = configureAPI[environment].URL;
+  const MySwal = withReactContent(Swal);
 
   const [productImage, setProductImage] = useState(null);
   const [productName, setProductName] = useState("");
@@ -146,6 +149,12 @@ const AddOwnerProduct = () => {
 
       if (response.ok) {
         setIsModalOpen(true);
+        MySwal.fire({
+          icon: "success",
+          title: "เพิ่มข้อมูลวัตถุดิบสำเร็จ",
+          timer: 2000,
+          showConfirmButton: false,
+        });
       } else {
         console.error("Failed to create ingredient");
       }
@@ -166,7 +175,7 @@ const AddOwnerProduct = () => {
   };
 
   return (
-    <div className="h-screen-website bg-[#F5F5F5]">
+    <div className="h-screen-website bg-[#F5F5F5] pb-8 overflow-y-auto space-x-4 scrollbar-hide whitespace-nowrap">
       <SideBar menuTab={"stock"} />
       <div className="ml-8 mr-8">
         <h1 className="font-bold text-3xl">คลังสินค้า</h1>
@@ -341,24 +350,6 @@ const AddOwnerProduct = () => {
           </div>
         </div>
 
-        {/* Modal */}
-        {isModalOpen && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-[#F5F5F5] rounded-lg p-6 w-[400px] text-center">
-              <AiOutlineCheckCircle
-                size={60}
-                className="text-green-500 mx-auto"
-              />
-              <h2 className="font-bold text-xl my-4">บันทึกเสร็จสิ้น</h2>
-              <button
-                className="px-4 py-2 bg-[#DD9F52] text-white rounded-full hover:bg-[#C68A47] transition-colors font-bold"
-                onClick={closeModal}
-              >
-                ปิด
-              </button>
-            </div>
-          </div>
-        )}
         {/* Save and Back buttons */}
         <div className="flex fixed bottom-0 left-0 px-4 py-4 pb-4 w-full space-x-8 justify-between bg-[#F5F5F5]">
           <button

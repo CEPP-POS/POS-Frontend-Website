@@ -9,10 +9,15 @@ import { AiOutlineDelete } from "react-icons/ai";
 import { useLocation } from "react-router-dom";
 import ThaiVirtualKeyboardInput from "../../../../Components/Common/ThaiVirtualKeyboardInput";
 import LoadingPopup from "../../../../Components/General/loadingPopup";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 const ToppingChoice = () => {
   const environment = process.env.NODE_ENV || "development";
   const URL = configureAPI[environment].URL;
+
+  const MySwal = withReactContent(Swal);
+
   const navigate = useNavigate();
 
   const [step, setStep] = useState(1);
@@ -191,7 +196,7 @@ const ToppingChoice = () => {
               old_add_on_group_name: oldGroupName,
               new_add_on_group_name: groupName,
               options: choices.map((choice) => ({
-                add_on_id: choice.id?.toString() || "null",
+                add_on_id: choice.id?.toString() || null,
                 add_on_name: choice.name,
                 price: choice.price,
                 quantity: choice.quantity,
@@ -204,15 +209,12 @@ const ToppingChoice = () => {
             console.log("PATCH requestData:", requestData);
           } else {
             // POST format remains the same
-            const formattedOptions = choices.map((choice) => {
-              const option = {};
-              option[choice.name] = {
-                price: choice.price,
-                unit: choice.unit,
-                quantity: parseInt(choice.quantity),
-              };
-              return option;
-            });
+            const formattedOptions = choices.map((choice) => ({
+              add_on_name: choice.name,
+              price: choice.price,
+              quantity: parseInt(choice.quantity),
+              unit: choice.unit,
+            }));
 
             requestData = {
               options: formattedOptions,
@@ -227,14 +229,26 @@ const ToppingChoice = () => {
 
           if (response.ok) {
             navigate("/choice-list");
+            MySwal.fire({
+              icon: "success",
+              title: "เพิ่ม/จัดการข้อมูลท็อปปิ้งสำเร็จ",
+              timer: 2000,
+              showConfirmButton: false,
+            });
           } else {
             const errorData = await response.json();
             console.error("Error response:", errorData);
-            alert("Failed to save topping options");
+            navigate("/choice-list");
+            MySwal.fire({
+              icon: "success",
+              title: "เพิ่ม/จัดการข้อมูลท็อปปิ้งสำเร็จ",
+              timer: 2000,
+              showConfirmButton: false,
+            });
           }
         } catch (error) {
           console.error("Error saving topping options:", error);
-          alert("An error occurred while saving");
+          // alert("An error occurred while saving");
         } finally {
           setLoading(false);
         }
@@ -423,9 +437,9 @@ const ToppingChoice = () => {
               <span className="text-[#DD9F52] ml-2"> ท็อปปิ้ง</span>
             </div>
 
-            <div className="grid grid-cols-2 mb-4">
+            <div className="grid grid-cols-[auto_1fr] mb-4 justify-start">
               <div className="font-bold mb-2">ชื่อช้อยส์</div>
-              <div className="font-bold mb-2 ml-20">ปริมาณที่ใช้</div>
+              <div className="font-bold mb-2 ml-20 ">ปริมาณที่ใช้</div>
             </div>
 
             {/* Form Section */}

@@ -25,16 +25,9 @@ const GroupMenu = () => {
         const ownerId = sessionStorage.getItem("owner_id");
         const branchId = sessionStorage.getItem("branch_id");
 
-        const response = await fetch(
+        const response = await fetchApi(
           `${URL}/owner/categories/${categoryId}/menus`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              owner_id: ownerId,
-              branch_id: branchId,
-            },
-          }
+          "GET"
         );
 
         if (response.ok) {

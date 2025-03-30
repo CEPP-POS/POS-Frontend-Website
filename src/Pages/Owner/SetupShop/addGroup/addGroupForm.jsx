@@ -8,10 +8,14 @@ import { useLocation } from "react-router-dom";
 import configureAPI from "../../../../Config/configureAPI";
 import LoadingPopup from "../../../../Components/General/loadingPopup";
 import ThaiVirtualKeyboardInput from "../../../../Components/Common/ThaiVirtualKeyboardInput";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 const AddGroupForm = () => {
   const environment = process.env.NODE_ENV || "development";
   const URL = configureAPI[environment].URL;
+
+  const MySwal = withReactContent(Swal);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -112,6 +116,12 @@ const AddGroupForm = () => {
 
         if (response.ok) {
           navigate("/group-list");
+          MySwal.fire({
+            icon: "success",
+            title: "เพิ่ม/จัดการข้อมูลกลุ่มรายการสินค้าสำเร็จ",
+            timer: 2000,
+            showConfirmButton: false,
+          });
         }
       }
     } catch (error) {

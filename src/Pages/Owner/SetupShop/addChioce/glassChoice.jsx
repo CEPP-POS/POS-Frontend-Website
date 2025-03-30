@@ -9,10 +9,13 @@ import { AiOutlineDelete } from "react-icons/ai";
 import { useLocation } from "react-router-dom";
 import ThaiVirtualKeyboardInput from "../../../../Components/Common/ThaiVirtualKeyboardInput";
 import LoadingPopup from "../../../../Components/General/loadingPopup";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 const GlassChoice = () => {
   const environment = process.env.NODE_ENV || "development";
   const URL = configureAPI[environment].URL;
+  const MySwal = withReactContent(Swal);
 
   const navigate = useNavigate();
   const groupedMenus = [];
@@ -162,7 +165,7 @@ const GlassChoice = () => {
               options: choices.map((choice) => {
                 const priceValue = parseFloat(choice.price || "0");
                 return {
-                  size_id: choice.id?.toString() || "null",
+                  size_id: choice.id?.toString() || null,
                   size_name: choice.name,
                   price: priceValue,
                 };
@@ -172,14 +175,10 @@ const GlassChoice = () => {
 
             console.log("PATCH requestData:", requestData);
           } else {
-            const formattedOptions = choices.map((choice) => {
-              const option = {};
-              const priceValue = parseFloat(choice.price || "0");
-              option[choice.name] = {
-                price: priceValue,
-              };
-              return option;
-            });
+            const formattedOptions = choices.map((choice) => ({
+              size_name: choice.name,
+              price: parseFloat(choice.price || "0").toFixed(2),
+            }));
 
             requestData = {
               size_group_name: groupName,
@@ -199,6 +198,12 @@ const GlassChoice = () => {
 
           if (response.ok) {
             navigate("/choice-list");
+            MySwal.fire({
+              icon: "success",
+              title: "เพิ่ม/จัดการข้อมูลขนาดแก้วสำเร็จ",
+              timer: 2000,
+              showConfirmButton: false,
+            });
           } else {
             const errorData = await response.json();
             console.error("Error response:", errorData);

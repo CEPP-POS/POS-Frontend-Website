@@ -16,6 +16,107 @@ function PhoneDetect({ onCapture, socket }) {
   const [waitingForDecision, setWaitingForDecision] = useState(false);
   const [isCapturing, setIsCapturing] = useState(false);
   const [showWebcam, setShowWebcam] = useState(true);
+  const [modelStatus, setModelStatus] = useState("กำลังตรวจสอบ...");
+  const [modelLoaded, setModelLoaded] = useState(false);
+  const [net, setNet] = useState(null);
+  const [isDetecting, setIsDetecting] = useState(true);
+
+  // โหลดโมเดลและเริ่มการตรวจจับ
+  useEffect(() => {
+    const runCoco = async () => {
+      try {
+        // กำหนดค่า TensorFlow ให้ save ในเครื่อง
+        await tf.ready();
+        tf.setBackend("webgl");
+
+        // แทนที่ tf.io.setLocalStorageManager() ด้วยวิธีที่รองรับ
+        // ตรวจสอบว่ามีโมเดลใน indexedDB หรือไม่
+        const models = await tf.io.listModels();
+        console.log("Available models in IndexedDB:", models);
+
+        // Try to load model (with caching)
+        console.log("Loading COCO-SSD model...");
+        const model = await cocossd.load();
+        console.log("Model loaded successfully:", model);
+
+        // บันทึกโมเดลลงใน IndexedDB หากยังไม่เคยบันทึก
+        const modelPath = "indexeddb://coco-ssd-model";
+        if (!models[modelPath]) {
+          try {
+            await model.model.save(modelPath);
+            console.log("Model saved to IndexedDB for future use");
+          } catch (saveError) {
+            console.warn("Failed to save model to IndexedDB:", saveError);
+          }
+        }
+
+        setNet(model);
+        setModelLoaded(true);
+        setModelStatus("โมเดลถูกโหลดแล้ว พร้อมใช้งาน");
+      } catch (error) {
+        console.error("Error loading model:", error);
+        setModelStatus("ไม่สามารถโหลดโมเดลได้: " + error.message);
+      }
+    };
+
+    runCoco();
+  }, []);
+
+  // ตรวจสอบสถานะการโหลดโมเดลและจัดการ caching
+  useEffect(() => {
+    const checkModelStatus = () => {
+      if (!navigator.onLine) {
+        setModelStatus("อยู่ในโหมด Offline");
+        return;
+      }
+
+      // ดูว่าโมเดลถูกโหลดหรือยัง - แก้ไขวิธีการตรวจสอบ
+      if (modelLoaded) {
+        setModelStatus("โมเดลถูกโหลดแล้ว พร้อมใช้งาน");
+        return;
+      }
+
+      const modelExists = window.performance
+        .getEntriesByType("resource")
+        .some((entry) => entry.name.includes("model"));
+
+      setModelStatus(
+        modelExists
+          ? "กำลังโหลดโมเดล..."
+          : "ยังไม่ได้โหลดโมเดล (จะดาวน์โหลดเมื่อใช้งานครั้งแรก)"
+      );
+    };
+
+    // เช็คสถานะทุกครั้งที่ online/offline status เปลี่ยน
+    window.addEventListener("online", checkModelStatus);
+    window.addEventListener("offline", checkModelStatus);
+
+    // เช็คสถานะครั้งแรก
+    checkModelStatus();
+
+    return () => {
+      window.removeEventListener("online", checkModelStatus);
+      window.removeEventListener("offline", checkModelStatus);
+    };
+  }, [modelLoaded]);
+
+  // ตรวจจับตลอดเวลาหลังจากโมเดลโหลดเสร็จ
+  useEffect(() => {
+    let detectionInterval;
+
+    if (net && isDetecting) {
+      detectionInterval = setInterval(() => {
+        detect(net);
+      }, 10);
+    }
+
+    return () => {
+      if (detectionInterval) {
+        clearInterval(detectionInterval);
+      }
+    };
+  }, [net, isDetecting]);
+
   // Modify handleCancel to reset the waiting state
   const handleCancel = () => {
     setIsCapturing(false);
@@ -48,16 +149,15 @@ function PhoneDetect({ onCapture, socket }) {
     onCapture(null);
   };
 
-  const [isDetecting, setIsDetecting] = useState(true);
-
-  const detect = async (net) => {
-    if (!isDetecting) {
+  const detect = async (model) => {
+    if (!isDetecting || !model) {
       return;
     }
 
     if (
       typeof webcamRef.current !== "undefined" &&
       webcamRef.current !== null &&
+      webcamRef.current.video &&
       webcamRef.current.video.readyState === 4
     ) {
       // Get Video Properties
@@ -73,22 +173,26 @@ function PhoneDetect({ onCapture, socket }) {
       canvasRef.current.width = videoWidth;
       canvasRef.current.height = videoHeight;
 
-      // Make Detections
-      const obj = await net.detect(video);
-      console.log("Detected objects:", obj);
-      const cellPhoneDetections = obj.filter(
-        (detection) => detection.class === "cell phone"
-      );
-      // ตีกรอบ detect เจอ
-      if (cellPhoneDetections.length > 0) {
-        setIsDetecting(false);
-        startCountdown();
-        setWaitingForDecision(true);
-      }
+      try {
+        // Make Detections
+        const obj = await model.detect(video);
+        console.log("Detected objects:", obj);
+        const cellPhoneDetections = obj.filter(
+          (detection) => detection.class === "cell phone"
+        );
+        // ตีกรอบ detect เจอ
+        if (cellPhoneDetections.length > 0) {
+          setIsDetecting(false);
+          startCountdown();
+          setWaitingForDecision(true);
+        }
 
-      // Draw mesh
-      const ctx = canvasRef.current.getContext("2d");
-      drawRect(cellPhoneDetections, ctx);
+        // Draw mesh
+        const ctx = canvasRef.current.getContext("2d");
+        drawRect(cellPhoneDetections, ctx);
+      } catch (error) {
+        console.error("Error during detection:", error);
+      }
     }
   };
 
@@ -115,20 +219,14 @@ function PhoneDetect({ onCapture, socket }) {
     }
   };
 
-  useEffect(() => {
-    const runCoco = async () => {
-      const net = await cocossd.load();
-      console.log("Model loaded:", net);
-      setInterval(() => {
-        detect(net);
-      }, 10);
-    };
-    runCoco();
-  }, []);
-
   return (
     <div>
       <div className="camera-section">
+        {/* Model Status */}
+        {/* <div className="model-status mb-2 mt-4 text-sm text-gray-600">
+          สถานะโมเดล {modelStatus}
+        </div> */}
+
         <div className="flex">
           {showWebcam && (
             <Webcam

@@ -8,7 +8,15 @@ import { BiFoodMenu } from "react-icons/bi";
 import CameraDetector from "../../../Components/Customer/cameraDetector";
 
 const UserRole = () => {
+  const role = sessionStorage.getItem("role");
+  const branch = sessionStorage.getItem("branch_id");
   const navigate = useNavigate();
+
+  console.log("ROLES", role);
+
+  if (role === "employee") {
+    
+  }
 
   const icons = [
     {
@@ -32,6 +40,11 @@ const UserRole = () => {
   ];
 
   const handleClick = (id) => {
+    if (role === "employee" && id === "owner") {
+      alert("คุณไม่มีสิทธิ์เข้าถึงเว็บไซต์สำหรับเจ้าของร้าน");
+      return;
+    }
+
     if (id === "owner") {
       navigate("/owner");
     } else if (id === "employee") {
@@ -61,6 +74,11 @@ const UserRole = () => {
                   "flex flex-col items-center cursor-pointer transition-all text-[#DD9F52] hover:text-[#C68A47]"
                 }
                 onClick={() => handleClick(id)}
+                style={{
+                  pointerEvents:
+                    role === "employee" && id === "owner" ? "none" : "auto",
+                  opacity: role === "employee" && id === "owner" ? 0.5 : 1,
+                }}
               >
                 <div
                   className={

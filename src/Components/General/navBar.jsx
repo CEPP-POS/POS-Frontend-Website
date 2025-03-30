@@ -37,7 +37,7 @@ const Navbar = () => {
         setBranches(data);
 
         const matchedBranch = data.find(
-          (branch) => branch.branch_id === Number(branchId)
+          (branch) => branch.branch_id === branchId
         );
 
         if (matchedBranch) {
@@ -113,7 +113,7 @@ const Navbar = () => {
                 {selectedBranch.branch_name} {selectedBranch.branch_address}
               </p>
             ) : (
-              <p>สุขเสมอคาเฟ่</p>
+              <p></p>
             )}
           </span>
         </a>
@@ -128,53 +128,55 @@ const Navbar = () => {
             <span className="text-xl font-bold">หน้าหลัก</span>
           </button>
 
-          <div className="relative">
-            <button
-              className="flex p-2 text-white hover:text-[#C68A47] transition-all duration-300"
-              onClick={toggleDropdown}
-            >
-              <div className="flex items-center">
-                <AiOutlineBranches size={24} />
-                <span className="text-xl font-bold">สาขา</span>
-              </div>
+          {role !== "employee" && (
+            <div className="relative">
+              <button
+                className="flex p-2 text-white hover:text-[#C68A47] transition-all duration-300"
+                onClick={toggleDropdown}
+              >
+                <div className="flex items-center">
+                  <AiOutlineBranches size={24} />
+                  <span className="text-xl font-bold">สาขา</span>
+                </div>
 
-              {isOpen && (
-                <div className="absolute left-0 mt-14 z-10 bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-white-700">
-                  <ul className="py-2 text-black">
-                    {branches.length > 0 ? (
-                      // branches.map((branch) => (
-                      //   <li key={branch.branch_id}>
-                      //     <button className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-white-600">
-                      //       {branch.branch_name} {branch.branch_address}
-                      //     </button>
-                      //   </li>
-                      // ))
+                {isOpen && (
+                  <div className="absolute left-0 mt-14 z-10 bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-white-700">
+                    <ul className="py-2 text-black">
+                      {branches.length > 0 ? (
+                        // branches.map((branch) => (
+                        //   <li key={branch.branch_id}>
+                        //     <button className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-white-600">
+                        //       {branch.branch_name} {branch.branch_address}
+                        //     </button>
+                        //   </li>
+                        // ))
+                        <li>
+                          <button
+                            className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-white-600"
+                            onClick={() => navigate("/branch")}
+                          >
+                            หน้าหลักสาขา
+                          </button>
+                        </li>
+                      ) : (
+                        <li className="px-4 py-2 text-gray-500">
+                          ไม่มีข้อมูลสาขา
+                        </li>
+                      )}
                       <li>
                         <button
                           className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-white-600"
-                          onClick={() => navigate("/branch")}
+                          onClick={() => navigate("/sync-branch")}
                         >
-                          หน้าหลักสาขา
+                          ซิงค์ข้อมูลสาขา
                         </button>
                       </li>
-                    ) : (
-                      <li className="px-4 py-2 text-gray-500">
-                        ไม่มีข้อมูลสาขา
-                      </li>
-                    )}
-                    <li>
-                      <button
-                        className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-white-600"
-                        onClick={() => navigate("/sync-branch")}
-                      >
-                        ซิงค์ข้อมูลสาขา
-                      </button>
-                    </li>
-                  </ul>
-                </div>
-              )}
-            </button>
-          </div>
+                    </ul>
+                  </div>
+                )}
+              </button>
+            </div>
+          )}
 
           <button className="flex p-2 text-white hover:text-red-600 transition-all duration-300">
             <LogoutButton />

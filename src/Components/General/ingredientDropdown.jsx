@@ -1,15 +1,22 @@
-import React, { useState, useEffect, useCallback } from "react";
-import Select from "react-select";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import fetchApi from "../../Config/fetchApi";
 import configureAPI from "../../Config/configureAPI";
+import ThaiVirtualKeyboardInput from "../Common/ThaiVirtualKeyboardInput";
+import { MdOutlineExpandLess } from "react-icons/md";
+import { MdOutlineExpandMore } from "react-icons/md";
 
 const IngredientDropdown = ({ value, onChange }) => {
   const environment = process.env.NODE_ENV || "development";
   const URL = configureAPI[environment].URL;
 
   const [ingredients, setIngredients] = useState([]);
-  const [currentValue, setCurrentValue] = useState(null);
-  const [isCustomInput, setIsCustomInput] = useState(false);
+  const [filteredIngredients, setFilteredIngredients] = useState([]);
+  const [inputValue, setInputValue] = useState("");
+  const [selectedIngredient, setSelectedIngredient] = useState(null);
+  const [showDropdown, setShowDropdown] = useState(false);
+
+  // สร้าง ref สำหรับ dropdown เพื่อตรวจจับคลิกภายนอก
+  const dropdownRef = useRef(null);
 
   // Fetch ingredients once
   useEffect(() => {
@@ -17,14 +24,13 @@ const IngredientDropdown = ({ value, onChange }) => {
       try {
         const response = await fetchApi(`${URL}/owner/ingredient`, "GET");
         const data = await response.json();
-        setIngredients(
-          data.map((ingredient) => ({
-            value: ingredient.ingredient_id,
-            label: ingredient.ingredient_name,
-            unit: ingredient.unit,
-            isFixed: true,
-          }))
-        );
+        const mappedIngredients = data.map((ingredient) => ({
+          value: ingredient.ingredient_id,
+          label: ingredient.ingredient_name,
+          unit: ingredient.unit,
+        }));
+        setIngredients(mappedIngredients);
+        setFilteredIngredients(mappedIngredients);
       } catch (error) {
         console.error("Error fetching ingredients:", error);
       }
@@ -33,117 +39,153 @@ const IngredientDropdown = ({ value, onChange }) => {
     fetchIngredients();
   }, [URL]);
 
-  console.log("ingredients in dropdown:", ingredients);
+  // ปิด dropdown เมื่อคลิกที่อื่น
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowDropdown(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   // Sync with external value
   useEffect(() => {
     if (value) {
-      const existingOption = ingredients.find((ing) => ing.label === value);
-      if (existingOption) {
-        setCurrentValue(existingOption);
-        setIsCustomInput(false);
+      const foundIngredient = ingredients.find((ing) => ing.label === value);
+      if (foundIngredient) {
+        setSelectedIngredient(foundIngredient);
       } else {
-        setCurrentValue({
-          value: value,
-          label: value,
-          isFixed: false,
-        });
-        setIsCustomInput(true);
+        setSelectedIngredient({ value: value, label: value, unit: "" });
       }
+      setInputValue(value);
     } else {
-      setCurrentValue(null);
-      setIsCustomInput(false);
+      setSelectedIngredient(null);
+      setInputValue("");
     }
   }, [value, ingredients]);
 
-  const handleChange = useCallback(
-    (selected) => {
-      if (selected) {
-        const newValue = {
-          value: selected.isFixed ? selected.value : selected.label,
-          label: selected.label,
-          unit: selected.unit,
-          isFixed: selected.isFixed,
-        };
-        setCurrentValue(newValue);
-        setIsCustomInput(!selected.isFixed);
-        onChange(newValue.value, newValue.label, newValue.unit);
+  // Filter ingredients based on input
+  useEffect(() => {
+    if (inputValue.trim() === "") {
+      setFilteredIngredients(ingredients);
+    } else {
+      const filtered = ingredients.filter((ing) =>
+        ing.label.toLowerCase().includes(inputValue.toLowerCase())
+      );
+      setFilteredIngredients(filtered);
+    }
+  }, [inputValue, ingredients]);
+
+  // Handle input change from ThaiVirtualKeyboardInput
+  const handleInputChange = useCallback(
+    (newValue) => {
+      setInputValue(newValue);
+
+      // Show dropdown when typing
+      if (newValue.trim() !== "") {
+        setShowDropdown(true);
       } else {
-        setCurrentValue(null);
-        setIsCustomInput(false);
-        onChange("", "", "");
+        setShowDropdown(false);
       }
+
+      // Check if the input matches any existing ingredient
+      const matchingIngredient = ingredients.find(
+        (ing) => ing.label.toLowerCase() === newValue.toLowerCase()
+      );
+
+      if (matchingIngredient) {
+        setSelectedIngredient(matchingIngredient);
+        onChange(
+          matchingIngredient.value,
+          matchingIngredient.label,
+          matchingIngredient.unit
+        );
+      } else {
+        // Custom ingredient
+        setSelectedIngredient({ value: newValue, label: newValue, unit: "" });
+        onChange(newValue, newValue, "");
+      }
+    },
+    [ingredients, onChange]
+  );
+
+  // Handle selection from dropdown
+  const handleSelectIngredient = useCallback(
+    (ingredient) => {
+      setSelectedIngredient(ingredient);
+      setInputValue(ingredient.label);
+      setShowDropdown(false);
+      onChange(ingredient.value, ingredient.label, ingredient.unit);
     },
     [onChange]
   );
 
-  const handleInputChange = useCallback(
-    (newValue, { action }) => {
-      if (action === "input-change") {
-        // Check if the current value is from the dropdown
-        const isFromDropdown = ingredients.some(
-          (ing) => ing.value === currentValue?.value && currentValue?.isFixed
-        );
-
-        // If it's not from the dropdown, allow editing
-        if (!isFromDropdown) {
-          const customValue = {
-            value: newValue,
-            label: newValue,
-            isFixed: false,
-          };
-          setCurrentValue(customValue);
-          setIsCustomInput(true);
-          onChange(newValue, newValue, ""); // Pass empty unit for custom input
-        }
-      }
-    },
-    [onChange, ingredients, currentValue]
-  );
-
-  const options = React.useMemo(
-    () => [
-      ...ingredients,
-      // เพิ่มตัวเลือกใหม่ถ้าเป็นการพิมพ์และไม่มีในรายการ
-      ...(currentValue?.label &&
-      !ingredients.some((ing) => ing.label === currentValue.label)
-        ? [
-            {
-              value: currentValue.label,
-              label: currentValue.label,
-              isFixed: false,
-            },
-          ]
-        : []),
-    ],
-    [ingredients, currentValue]
-  );
-
-  const customStyles = {
-    control: (provided) => ({
-      ...provided,
-      border: "1px solid #D4B28C",
-      borderRadius: "30px",
-      padding: "6px",
-      color: "#4B5563",
-      fontSize: "16px",
-    }),
-  };
+  // Toggle dropdown visibility
+  const toggleDropdown = useCallback(() => {
+    setShowDropdown((prev) => !prev);
+  }, []);
 
   return (
-    <Select
-      options={options}
-      onChange={handleChange}
-      value={currentValue}
-      onInputChange={handleInputChange}
-      isSearchable={true}
-      isClearable
-      placeholder="เลือกหรือพิมพ์ชื่อวัตถุดิบ..."
-      styles={customStyles}
-      noOptionsMessage={() => "พิมพ์เพื่อเพิ่มวัตถุดิบใหม่"}
-      menuPortalTarget={document.body}
-      menuPosition="fixed"
-    />
+    <div className="relative w-full" ref={dropdownRef}>
+      {/* Main input with Thai Virtual Keyboard */}
+      <div className="flex items-center">
+        <div className="flex-grow">
+          <ThaiVirtualKeyboardInput
+            value={inputValue}
+            onChange={handleInputChange}
+            placeholder="เลือกหรือพิมพ์ชื่อวัตถุดิบ..."
+            className="w-full border border-[#DD9F52] bg-[#F5F5F5] rounded-full p-3 text-gray-600 focus:outline-none focus:ring-2 focus:ring-brown-400"
+          />
+        </div>
+        <button
+          type="button"
+          onClick={toggleDropdown}
+          className="ml-2 p-2 bg-[#DD9F52] text-white rounded-full w-10 h-10 flex items-center justify-center"
+          title="แสดง/ซ่อนรายการวัตถุดิบ"
+        >
+          {showDropdown ? (
+            <MdOutlineExpandLess size={36} />
+          ) : (
+            <MdOutlineExpandMore size={36} />
+          )}
+        </button>
+      </div>
+
+      {/* Dropdown list */}
+      {showDropdown && (
+        <div className="absolute z-10 w-full mt-1 max-h-60 overflow-y-auto bg-white border border-[#D4B28C] rounded-lg shadow-lg">
+          {filteredIngredients.length > 0 ? (
+            filteredIngredients.map((ingredient) => (
+              <div
+                key={ingredient.value}
+                className={`p-2 cursor-pointer transition-colors duration-150 hover:bg-[#F5F5F5] ${
+                  selectedIngredient?.value === ingredient.value
+                    ? "bg-[#F5F5F5] font-medium"
+                    : ""
+                }`}
+                onClick={() => handleSelectIngredient(ingredient)}
+              >
+                {ingredient.label}
+                {ingredient.unit && (
+                  <span className="text-gray-500 text-sm ml-2">
+                    ({ingredient.unit})
+                  </span>
+                )}
+              </div>
+            ))
+          ) : (
+            <div className="p-2 text-center text-gray-500">
+              ไม่พบวัตถุดิบ "{inputValue}" ในระบบ
+            </div>
+          )}
+        </div>
+      )}
+    </div>
   );
 };
 

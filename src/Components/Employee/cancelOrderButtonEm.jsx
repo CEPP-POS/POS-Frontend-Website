@@ -3,6 +3,8 @@ import "react-simple-keyboard/build/css/index.css";
 import fetchApi from "../../Config/fetchApi";
 import configureAPI from "../../Config/configureAPI";
 import ThaiVirtualKeyboardInput from "../Common/ThaiVirtualKeyboardInput";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 const CancelOrderButtonEm = ({ order, onSuccess }) => {
   const environment = process.env.NODE_ENV || "development";
@@ -17,6 +19,7 @@ const CancelOrderButtonEm = ({ order, onSuccess }) => {
   const [contactError, setContactError] = useState("");
 
   console.log("cancel order", order);
+  const MySwal = withReactContent(Swal);
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -24,7 +27,7 @@ const CancelOrderButtonEm = ({ order, onSuccess }) => {
 
   const closeModal = () => {
     setIsModalOpen(false);
-    setOrderIdError(""); 
+    setOrderIdError("");
   };
 
   const validateOrderId = () => {
@@ -55,7 +58,7 @@ const CancelOrderButtonEm = ({ order, onSuccess }) => {
   };
 
   const cancelOrder = async () => {
-    if (!validateOrderId()) return; 
+    if (!validateOrderId()) return;
 
     const customerData = {
       order_id: orderId,
@@ -74,6 +77,12 @@ const CancelOrderButtonEm = ({ order, onSuccess }) => {
 
       if (response.ok) {
         console.log("Order cancel successfully!");
+        MySwal.fire({
+          icon: "success",
+          title: "ยกเลิกออเดอร์สำเร็จ",
+          timer: 2000,
+          showConfirmButton: false,
+        });
         closeModal();
         await onSuccess();
       } else {
